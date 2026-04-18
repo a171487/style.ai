@@ -1,0 +1,1784 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STYLE∙AI — 智能穿搭顧問</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Noto+Sans+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & Root ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:       #f5f0e8;
+  --surface:  #fdfaf4;
+  --card:     #ffffff;
+  --border:   #e4ddd2;
+  --border2:  #cfc8be;
+  --ink:      #2e2820;
+  --ink2:     #6b6059;
+  --muted:    #a09688;
+  --accent:   #c9a96e;
+  --accent2:  #e8d5b0;
+  --rose:     #d4877a;
+  --teal:     #5b9ea0;
+  --sage:     #7d9b76;
+  --lavender: #9b8dc4;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,.06);
+  --shadow:    0 8px 32px rgba(0,0,0,.08);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,.12);
+  --radius:    20px;
+  --radius-sm: 12px;
+  --trans:     all .3s cubic-bezier(.4,0,.2,1);
+}
+[data-theme="dark"] {
+  --bg:      #1a1612;
+  --surface: #231f1a;
+  --card:    #2d2822;
+  --border:  #3d3830;
+  --border2: #4d4840;
+  --ink:     #f0ebe2;
+  --ink2:    #c4b8a8;
+  --muted:   #7a7068;
+  --accent:  #c9a96e;
+  --accent2: #3a3020;
+}
+
+/* ── Base ── */
+body {
+  font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+  transition: background .4s, color .4s;
+  min-height: 100vh;
+}
+
+/* ── App Shell ── */
+.app {
+  max-width: 1560px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 28px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+}
+.logo {
+  font-family: "Playfair Display", serif;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  color: var(--ink);
+}
+.logo span { color: var(--accent); }
+.logo small {
+  display: block;
+  font-family: "Noto Sans TC", sans-serif;
+  font-size: 11px;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 400;
+}
+.header-actions { display: flex; gap: 10px; align-items: center; }
+.icon-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px;
+  transition: var(--trans);
+  color: var(--ink2);
+}
+.icon-btn:hover { background: var(--accent2); border-color: var(--accent); transform: scale(1.05); }
+
+/* ── Main Grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: 300px 1fr 320px;
+  gap: 16px;
+  align-items: start;
+}
+@media (max-width: 1200px) {
+  .grid { grid-template-columns: 280px 1fr; }
+  .col-right { grid-column: 1 / -1; }
+}
+@media (max-width: 768px) {
+  .grid { grid-template-columns: 1fr; }
+  .col-left, .col-center, .col-right { grid-column: 1; }
+}
+
+/* ── Card ── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: var(--shadow-sm);
+  transition: var(--trans);
+}
+.card + .card { margin-top: 14px; }
+.card:hover { box-shadow: var(--shadow); }
+
+/* ── Section Label ── */
+.sec-label {
+  font-size: 10px;
+  letter-spacing: .35em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sec-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.sec-title {
+  font-family: "Playfair Display", serif;
+  font-size: 18px;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+
+/* ── Form Controls ── */
+.field { margin-bottom: 14px; }
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink2);
+  margin-bottom: 6px;
+  letter-spacing: .04em;
+}
+input, select, textarea {
+  width: 100%;
+  font: inherit;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  transition: var(--trans);
+  -webkit-appearance: none;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(201,169,110,.15);
+  background: var(--card);
+}
+textarea { resize: vertical; min-height: 72px; }
+
+/* ── Toggle Chips ── */
+.chip-group { display: flex; flex-wrap: wrap; gap: 7px; }
+.chip {
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  font-size: 13px;
+  cursor: pointer;
+  transition: var(--trans);
+  color: var(--ink2);
+  white-space: nowrap;
+  user-select: none;
+}
+.chip:hover { border-color: var(--accent); color: var(--ink); }
+.chip.active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+[data-theme="dark"] .chip.active { background: var(--accent); border-color: var(--accent); color: #1a1612; }
+
+/* ── Color Swatches ── */
+.swatch-group { display: flex; flex-wrap: wrap; gap: 8px; }
+.swatch {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2.5px solid transparent;
+  transition: var(--trans);
+  position: relative;
+}
+.swatch:hover { transform: scale(1.15); }
+.swatch.active {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 3px rgba(46,40,32,.2);
+}
+.swatch::after {
+  content: '✓';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: rgba(255,255,255,.9);
+  opacity: 0;
+  transition: opacity .2s;
+}
+.swatch.active::after { opacity: 1; }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 11px 20px;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--trans);
+  border: none;
+  white-space: nowrap;
+}
+.btn-primary {
+  background: var(--ink);
+  color: #fff;
+}
+.btn-primary:hover { background: #4a3f34; transform: translateY(-1px); box-shadow: var(--shadow); }
+[data-theme="dark"] .btn-primary { background: var(--accent); color: #1a1612; }
+.btn-outline {
+  background: transparent;
+  border: 1.5px solid var(--border2);
+  color: var(--ink);
+}
+.btn-outline:hover { border-color: var(--accent); background: var(--accent2); }
+.btn-accent {
+  background: var(--accent);
+  color: #fff;
+}
+.btn-accent:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.btn-block { width: 100%; }
+
+/* ── Outfit Display ── */
+.outfit-hero {
+  min-height: 200px;
+  background: linear-gradient(135deg, var(--surface) 0%, var(--accent2) 100%);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+  border: 1px dashed var(--border2);
+}
+.outfit-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 30% 0%, rgba(201,169,110,.15) 0%, transparent 60%);
+}
+.outfit-figure {
+  font-size: 80px;
+  line-height: 1;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,.15));
+  transition: var(--trans);
+}
+.outfit-figure:hover { transform: scale(1.05); }
+.outfit-label-badge {
+  position: absolute;
+  top: 14px; right: 14px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  letter-spacing: .08em;
+}
+[data-theme="dark"] .outfit-label-badge { background: var(--accent); color: #1a1612; }
+
+/* ── Outfit Items Grid ── */
+.outfit-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.outfit-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  text-align: center;
+  transition: var(--trans);
+  cursor: default;
+}
+.outfit-item:hover { border-color: var(--accent); background: var(--card); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+.outfit-item .icon { font-size: 22px; margin-bottom: 4px; }
+.outfit-item .cat {
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 3px;
+}
+.outfit-item .val {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+/* ── Color Palette Strip ── */
+.palette-strip {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 14px 16px;
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  margin-bottom: 14px;
+}
+.palette-dot {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
+  transition: transform .2s;
+}
+.palette-dot:hover { transform: scale(1.2); }
+.palette-label {
+  font-size: 12px;
+  color: var(--ink2);
+  flex: 1;
+}
+
+/* ── Weather ── */
+.weather-main {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: linear-gradient(135deg, #667eea22, #764ba222);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  margin-bottom: 14px;
+}
+.weather-icon { font-size: 42px; line-height: 1; }
+.weather-temp { font-family: "Playfair Display", serif; font-size: 36px; font-weight: 600; color: var(--ink); }
+.weather-desc { font-size: 13px; color: var(--ink2); }
+.weather-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.weather-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  text-align: center;
+}
+.stat-icon { font-size: 18px; margin-bottom: 2px; }
+.stat-val { font-size: 15px; font-weight: 600; color: var(--ink); }
+.stat-label { font-size: 10px; color: var(--muted); letter-spacing: .1em; }
+
+.hourly-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border2) transparent;
+}
+.hourly-card {
+  flex: 0 0 72px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 8px;
+  text-align: center;
+  font-size: 12px;
+  transition: var(--trans);
+}
+.hourly-card.now {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+[data-theme="dark"] .hourly-card.now { background: var(--accent); border-color: var(--accent); color: #1a1612; }
+.hourly-card .h-time { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+.hourly-card.now .h-time { color: rgba(255,255,255,.7); }
+.hourly-card .h-icon { font-size: 18px; margin-bottom: 3px; }
+.hourly-card .h-temp { font-weight: 600; }
+.hourly-card .h-rain { font-size: 11px; color: #64b5f6; }
+.hourly-card.now .h-rain { color: #90caf9; }
+
+/* ── Recommendation Pills ── */
+.rec-section { margin-bottom: 18px; }
+.rec-title {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink2);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.pill-list { display: flex; flex-wrap: wrap; gap: 7px; }
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 13px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 13px;
+  color: var(--ink2);
+  transition: var(--trans);
+}
+.pill.highlight {
+  background: var(--accent2);
+  border-color: var(--accent);
+  color: var(--ink);
+  font-weight: 500;
+}
+.pill:hover { border-color: var(--accent); transform: translateY(-1px); }
+
+/* ── Makeup Steps ── */
+.makeup-steps { counter-reset: step; }
+.makeup-step {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  align-items: flex-start;
+}
+.makeup-step:last-child { border-bottom: none; }
+.step-num {
+  flex-shrink: 0;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: var(--accent2);
+  border: 1.5px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.step-content { flex: 1; }
+.step-name { font-size: 13px; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+.step-tip { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* ── Advice Banner ── */
+.advice-banner {
+  padding: 16px 18px;
+  background: linear-gradient(135deg, var(--accent2), #f5efe6);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
+  margin-bottom: 14px;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--ink);
+  position: relative;
+}
+[data-theme="dark"] .advice-banner { background: linear-gradient(135deg, #3a3020, #2d2822); }
+.advice-banner .quote-mark {
+  position: absolute;
+  top: -8px; left: 14px;
+  font-family: "Playfair Display", serif;
+  font-size: 40px;
+  color: var(--accent);
+  line-height: 1;
+}
+
+/* ── Favorites ── */
+.fav-list { display: flex; flex-direction: column; gap: 8px; }
+.fav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  transition: var(--trans);
+}
+.fav-item:hover { border-color: var(--accent); }
+.fav-emoji { font-size: 20px; }
+.fav-name { flex: 1; color: var(--ink); font-weight: 500; }
+.fav-date { font-size: 11px; color: var(--muted); }
+.fav-del {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  transition: var(--trans);
+}
+.fav-del:hover { color: var(--rose); background: #fde8e8; }
+
+/* ── Alert / Status ── */
+.status-msg {
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+.status-msg.info { background: #e8f4fd; border: 1px solid #90caf9; color: #1565c0; }
+.status-msg.warn { background: #fff8e1; border: 1px solid #ffcc02; color: #e65100; }
+.status-msg.success { background: #e8f5e9; border: 1px solid #a5d6a7; color: #2e7d32; }
+.status-msg.error { background: #fce4ec; border: 1px solid #f48fb1; color: #b71c1c; }
+[data-theme="dark"] .status-msg.info { background: #0d2137; border-color: #1565c0; color: #90caf9; }
+[data-theme="dark"] .status-msg.warn { background: #2a2200; border-color: #f9a825; color: #ffcc02; }
+
+/* ── UV Bar ── */
+.uv-bar-wrap { margin: 8px 0; }
+.uv-bar-track {
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(to right, #4caf50, #ffeb3b, #ff9800, #f44336, #9c27b0);
+  position: relative;
+  margin: 6px 0;
+}
+.uv-marker {
+  position: absolute;
+  top: -3px;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--ink);
+  transform: translateX(-50%);
+  transition: left .5s;
+}
+.uv-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--muted);
+}
+
+/* ── Tab Nav ── */
+.tab-nav {
+  display: flex;
+  gap: 4px;
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 4px;
+  border: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+.tab-btn {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  transition: var(--trans);
+}
+.tab-btn.active {
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── Animations ── */
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.anim { animation: fadeSlide .4s ease forwards; }
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.05); }
+}
+.pulse { animation: pulse 2s ease-in-out infinite; }
+
+/* ── Divider ── */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 16px 0;
+}
+
+/* ── Tooltip ── */
+[data-tip] { position: relative; cursor: help; }
+[data-tip]:hover::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: #fff;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* ── Loading Spinner ── */
+.spinner {
+  width: 20px; height: 20px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+  display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Print ── */
+@media print {
+  .header-actions, .col-left, .tab-nav, .btn { display: none !important; }
+  .grid { grid-template-columns: 1fr 1.5fr; }
+  .col-right { break-before: page; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ── Header ── -->
+<header class="header">
+  <div class="logo">
+    STYLE<span>∙</span>AI
+    <small>智能穿搭顧問 · Weather Sync</small>
+  </div>
+  <div class="header-actions">
+    <button class="icon-btn" id="saveBtn" title="儲存今日穿搭">💾</button>
+    <button class="icon-btn" id="printBtn" title="列印 / 匯出">🖨️</button>
+    <button class="icon-btn" id="themeBtn" title="切換深色模式">🌙</button>
+  </div>
+</header>
+
+<!-- ── Main Grid ── -->
+<div class="grid">
+
+  <!-- ══ LEFT ══ -->
+  <aside class="col-left">
+
+    <!-- Profile -->
+    <div class="card">
+      <div class="sec-label">Personal Profile</div>
+      <div class="field">
+        <label>場合 / 活動</label>
+        <input type="text" id="occasion" placeholder="例：上班、約會、逛展覽..." />
+      </div>
+      <div class="field">
+        <label>體型</label>
+        <div class="chip-group" id="bodyChips">
+          <div class="chip active" data-val="梨形">梨形</div>
+          <div class="chip" data-val="蘋果形">蘋果形</div>
+          <div class="chip" data-val="直筒型">直筒型</div>
+          <div class="chip" data-val="沙漏型">沙漏型</div>
+          <div class="chip" data-val="倒三角">倒三角</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>膚色調性</label>
+        <div class="swatch-group" id="skinSwatches">
+          <div class="swatch active" data-tone="冷白" style="background:#f8e8dc" data-tip="冷調白皙"></div>
+          <div class="swatch" data-tone="暖米" style="background:#f0d5b8" data-tip="暖調米白"></div>
+          <div class="swatch" data-tone="健康小麥" style="background:#c8956c" data-tip="健康小麥"></div>
+          <div class="swatch" data-tone="深咖" style="background:#8b5e3c" data-tip="深咖啡色"></div>
+          <div class="swatch" data-tone="橄欖" style="background:#a89060" data-tip="橄欖中性"></div>
+        </div>
+      </div>
+      <div class="field">
+        <label>偏好顏色（可複選）</label>
+        <div class="chip-group" id="colorChips">
+          <div class="chip active" data-val="大地色">大地色</div>
+          <div class="chip" data-val="粉嫩色">粉嫩色</div>
+          <div class="chip" data-val="黑白灰">黑白灰</div>
+          <div class="chip" data-val="飽和色">飽和色</div>
+          <div class="chip" data-val="金屬感">金屬感</div>
+          <div class="chip" data-val="藍綠系">藍綠系</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Style Select -->
+    <div class="card">
+      <div class="sec-label">Style Direction</div>
+      <div class="field">
+        <label>穿搭風格</label>
+        <select id="styleSelect">
+          <option value="elegant">法式優雅 Parisienne</option>
+          <option value="casual">休閒隨性 Off-duty</option>
+          <option value="office">職場知性 Business Chic</option>
+          <option value="date">浪漫約會 Romantic Date</option>
+          <option value="street">街頭潮流 Streetwear</option>
+          <option value="resort">度假慵懶 Resort Vibes</option>
+          <option value="athleisure">運動休閒 Athleisure</option>
+          <option value="dark">暗黑個性 Dark Mode</option>
+          <option value="korean">韓系清甜 K-Style</option>
+          <option value="vintage">復古文青 Vintage</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>預算考量</label>
+        <div class="chip-group" id="budgetChips">
+          <div class="chip active" data-val="平價">平價</div>
+          <div class="chip" data-val="中價位">中價位</div>
+          <div class="chip" data-val="精品">精品感</div>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-block" id="generateBtn" style="margin-top:4px;">
+        ✨ 產生穿搭建議
+      </button>
+    </div>
+
+    <!-- Favorites -->
+    <div class="card">
+      <div class="sec-label">Saved Looks</div>
+      <div id="favList" class="fav-list">
+        <div style="font-size:13px;color:var(--muted);text-align:center;padding:14px 0;">
+          尚無儲存的穿搭<br>點擊 💾 來儲存今日搭配
+        </div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ══ CENTER ══ -->
+  <main class="col-center">
+
+    <!-- Outfit Hero -->
+    <div class="card">
+      <div class="outfit-hero" id="outfitHero">
+        <div class="outfit-label-badge" id="styleLabel">法式優雅</div>
+        <div class="outfit-figure" id="outfitFigure">👗</div>
+      </div>
+
+      <!-- Style Headline -->
+      <div style="margin-bottom:16px;">
+        <div class="sec-label">Today's Look</div>
+        <div class="sec-title" id="lookTitle">Parisian Chic — 知性優雅的法式日常</div>
+        <div id="adviceBanner" class="advice-banner">
+          <span class="quote-mark">"</span>
+          <div style="margin-top:4px;font-style:italic;font-size:14px;" id="adviceText">
+            選擇垂墜感的絲質上衣搭配高腰闊腿褲，以奶油白為主調，用焦糖配件點睛。
+            法式穿搭的精髓在於「刻意的不完美」——把上衣隨意塞進褲腰，鬆開一顆釦子。
+          </div>
+        </div>
+      </div>
+
+      <!-- Outfit Items -->
+      <div class="sec-label">Outfit Breakdown</div>
+      <div class="outfit-grid" id="outfitGrid">
+        <!-- Filled by JS -->
+      </div>
+
+      <!-- Color Palette -->
+      <div class="sec-label">Color Palette</div>
+      <div class="palette-strip" id="palettStrip">
+        <div class="palette-label">今日推薦色盤</div>
+      </div>
+
+      <!-- Notes -->
+      <div class="field" style="margin-top:6px;">
+        <label>個人備註 / 特殊需求</label>
+        <textarea id="noteArea" placeholder="例：今天需要走很多路、有重要簡報、下午有戶外活動..."></textarea>
+      </div>
+    </div>
+
+    <!-- Makeup -->
+    <div class="card">
+      <div class="sec-label">Beauty Guide</div>
+      <div class="tab-nav" id="beautyTabNav">
+        <button class="tab-btn active" data-tab="makeup">彩妝步驟</button>
+        <button class="tab-btn" data-tab="hair">髮型建議</button>
+        <button class="tab-btn" data-tab="skincare">保養提醒</button>
+      </div>
+      <div id="beautyContent">
+        <!-- Filled by JS -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ══ RIGHT ══ -->
+  <aside class="col-right">
+
+    <!-- Weather -->
+    <div class="card">
+      <div class="sec-label">Weather Sync</div>
+      <div id="weatherStatusMsg" class="status-msg info">
+        點擊下方按鈕，同步今日天氣以獲得最準確建議。
+      </div>
+
+      <div id="weatherDisplay" style="display:none;">
+        <div class="weather-main" id="weatherMain">
+          <div class="weather-icon" id="wIcon">🌤️</div>
+          <div>
+            <div class="weather-temp" id="wTemp">—°C</div>
+            <div class="weather-desc" id="wDesc">—</div>
+            <div class="weather-meta" id="wMeta">—</div>
+          </div>
+        </div>
+        <div class="weather-stats">
+          <div class="stat-card">
+            <div class="stat-icon">💧</div>
+            <div class="stat-val" id="wHumidity">—</div>
+            <div class="stat-label">體感濕度</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🌂</div>
+            <div class="stat-val" id="wRain">—</div>
+            <div class="stat-label">降雨機率</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">💨</div>
+            <div class="stat-val" id="wWind">—</div>
+            <div class="stat-label">風速 km/h</div>
+          </div>
+        </div>
+
+        <!-- UV -->
+        <div style="margin-bottom:12px;">
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--ink2);margin-bottom:4px;">
+            <span>☀️ UV 紫外線指數</span>
+            <span id="wUvLabel" style="font-weight:600;">—</span>
+          </div>
+          <div class="uv-bar-wrap">
+            <div class="uv-bar-track">
+              <div class="uv-marker" id="uvMarker" style="left:0%"></div>
+            </div>
+            <div class="uv-labels"><span>低</span><span>中</span><span>高</span><span>極高</span><span>危</span></div>
+          </div>
+        </div>
+
+        <!-- Hourly -->
+        <div class="sec-label" style="margin-bottom:8px;">逐時預報</div>
+        <div class="hourly-scroll" id="hourlyScroll"></div>
+
+        <!-- Weather Tips -->
+        <div id="weatherTips" style="margin-top:14px;"></div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <button class="btn btn-primary" id="locateBtn" style="flex:1;">
+          📍 取得天氣
+        </button>
+        <button class="btn btn-outline" id="retryBtn" style="display:none;">🔄 重新整理</button>
+      </div>
+    </div>
+
+    <!-- Hair & Accessories -->
+    <div class="card">
+      <div class="sec-label">Accessories</div>
+      <div id="accessoriesPanel"></div>
+    </div>
+
+    <!-- Style Tips -->
+    <div class="card">
+      <div class="sec-label">Style Coach Tips</div>
+      <div id="styleTips" style="font-size:13px;line-height:1.9;color:var(--ink2);"></div>
+    </div>
+
+  </aside>
+</div><!-- /grid -->
+</div><!-- /app -->
+
+<script>
+// ═══════════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════════
+const STYLES = {
+  elegant: {
+    label: '法式優雅',
+    emoji: '🥂',
+    figure: '👗',
+    title: 'Parisian Chic — 知性優雅的法式日常',
+    advice: '選擇垂墜感的絲質上衣搭配高腰闊腿褲，以奶油白為主調，用焦糖配件點睛。法式穿搭的精髓在於「刻意的不完美」——把上衣隨意塞進褲腰，鬆開一顆釦子，讓整體透出不費力的優雅感。',
+    items: [
+      { icon: '👚', cat: '上衣', val: '絲質垂墜衬衫 / 針織透膚上衣' },
+      { icon: '👖', cat: '下身', val: '高腰闊腿褲 / A字長裙' },
+      { icon: '🧥', cat: '外搭', val: '奶油色羊絨毛衣 / 修身西裝外套' },
+      { icon: '👛', cat: '包款', val: '迷你皮革肩背包 / 竹節包' },
+      { icon: '👠', cat: '鞋款', val: '尖頭低跟鞋 / 芭蕾舞平底鞋' },
+      { icon: '💍', cat: '配件', val: '細鏈金項鍊 / 珍珠耳環' },
+    ],
+    palette: ['#f5efe0','#c8a876','#8b7355','#2e2820','#d4c5a9'],
+    paletteDesc: '奶油 · 焦糖 · 咖啡 · 深墨 · 砂金',
+    makeup: [
+      { step:'底妝', tip:'輕透光澤底妝，用氣墊輕拍，T字定妝即可，保留自然光澤感' },
+      { step:'眉毛', tip:'自然眉型，用眉粉輕描，不要過於銳利，維持柔和法式感' },
+      { step:'眼妝', tip:'單色大地眼影打底，細眼線從瞳孔中段往外延伸，輕夾睫毛' },
+      { step:'腮紅', tip:'玫瑰棕色腮紅斜掃顴骨，往太陽穴方向暈染，呈現雕塑感' },
+      { step:'唇色', tip:'裸玫瑰色或豆沙色唇膏，可微微超出唇線強調豐唇感' },
+      { step:'定妝', tip:'噴霧定妝，手指輕拍讓妝容更服貼，呈現「好像沒化」的法式感' },
+    ],
+    hair: [
+      { style:'低鬆髻', tip:'帶點凌亂感的低馬尾或低髻，抽出幾絲碎髮修飾臉型' },
+      { style:'側分大波浪', tip:'1:9側分，用大卷棒做鬆波浪，完成後用手撥散，不要過於整齊' },
+      { style:'耳後夾髮', tip:'最簡單的法式，把一側頭髮夾到耳後，搭配耳環更顯精緻' },
+    ],
+    skincare: ['補水保濕噴霧隨身攜帶', '防曬 SPF30 以上務必補擦', '雙頰容易脫妝可攜帶氣墊補妝'],
+    accessories: ['細鏈金手環', '細框墨鏡', '絲巾可繫包包或頭髮', '小皮帶為腰間增添層次'],
+    tips: ['法式穿搭不追求完美，刻意的「不完美細節」才是靈魂。', '選擇 2-3 個顏色為主，用配件做唯一亮點。', '質感優先於款式，一件好料子的基本款勝過多件廉價單品。'],
+    coach: '今天的法式重點：「少即是多」。整套搭配控制在三色以內，一個亮眼配件即可。若場合是上班，選深色系；約會選奶油暖色系。'
+  },
+  casual: {
+    label: '休閒隨性',
+    emoji: '☕',
+    figure: '🧢',
+    title: 'Off-duty Cool — 輕鬆不費力的週末感',
+    advice: '選用棉質T恤或條紋衫搭配牛仔褲，加一件超大版型外套是點睛之筆。休閒風的秘訣是「有意識地鬆」——褲腳反折、上衣隨意紮一角，製造輕鬆的生活感。',
+    items: [
+      { icon: '👕', cat: '上衣', val: '棉質素色T / 橫條紋上衣' },
+      { icon: '👖', cat: '下身', val: '九分牛仔褲 / 棉質短褲' },
+      { icon: '🧥', cat: '外搭', val: '超大版棉衛衣 / 格紋法蘭絨襯衫' },
+      { icon: '🎒', cat: '包款', val: '帆布托特包 / 小腰包' },
+      { icon: '👟', cat: '鞋款', val: '白色小白鞋 / 老爹鞋' },
+      { icon: '🧢', cat: '配件', val: '棒球帽 / 毛線帽' },
+    ],
+    palette: ['#ffffff','#6b8cae','#c4c4c4','#3d3d3d','#e8d5b0'],
+    paletteDesc: '白 · 牛仔藍 · 灰 · 深灰 · 奶茶',
+    makeup: [
+      { step:'底妝', tip:'輕薄BB霜或有色保濕，指腹推開即可，不需要全臉覆蓋' },
+      { step:'眉毛', tip:'眉筆輕描本身眉型，重點是整齊乾淨，不追求精緻弧度' },
+      { step:'眼妝', tip:'棕色或大地色眼影輕刷眼窩，加棕色纖維睫毛膏即完成' },
+      { step:'腮紅', tip:'珊瑚或桃色腮紅拍在笑肌上，健康感微醺妝效' },
+      { step:'唇色', tip:'珊瑚紅或豆沙色唇彩，口紅或唇凍都適合' },
+      { step:'定妝', tip:'散粉輕壓T字區即可，保留其他部位的水潤感' },
+    ],
+    hair: [
+      { style:'高馬尾', tip:'乾淨俐落的高馬尾，用發圈+細鬆緊帶雙層固定更持久' },
+      { style:'空氣感丸子頭', tip:'紮個不太完整的丸子頭，拉出一點碎髮，搭配帽子超好看' },
+      { style:'自然直髮', tip:'吹整後用護髮素抓出輕盈感，不需造型只要有光澤就夠' },
+    ],
+    skincare: ['防曬乳必擦（戶外時每2小時補一次）', '攜帶吸油面紙保持清爽', '護唇膏常備，唇色才好看'],
+    accessories: ['帆布托特包裝得下一切', '棒球帽遮陽又時髦', '簡單細圈手環即可', '太陽眼鏡是必備'],
+    tips: ['休閒風最重要是舒適感，從內到外都要是你喜歡的。', '一個特別的配件（帽子/包包）就能讓整套提升一個層次。', '白色鞋永遠是最百搭的選擇。'],
+    coach: '今天的休閒重點：舒適是第一優先，但別忘了細節。帽子、包包和鞋子的搭配呼應，整套立刻不一樣。'
+  },
+  office: {
+    label: '職場知性',
+    emoji: '💼',
+    figure: '🤵‍♀️',
+    title: 'Business Chic — 不失個性的職場優雅',
+    advice: '以剪裁利落的西裝外套為核心，搭配細節豐富的內搭——蕾絲邊、胸針或絲巾都是好選擇。職場穿搭不等於乏味，用配色和配件傳遞你的個性。',
+    items: [
+      { icon: '🧥', cat: '外套', val: '修身西裝外套 / 羊毛大衣' },
+      { icon: '👚', cat: '內搭', val: '細條紋衬衫 / 素色高領針織衫' },
+      { icon: '👖', cat: '下身', val: '直筒高腰褲 / 鉛筆裙' },
+      { icon: '💼', cat: '包款', val: 'A4可放公事包 / 皮革托特包' },
+      { icon: '👠', cat: '鞋款', val: '低跟正式鞋 / 方頭平底鞋' },
+      { icon: '📎', cat: '配件', val: '胸針 / 細金鍊 / 手錶' },
+    ],
+    palette: ['#2e2820','#4a6741','#c9a96e','#f5f0e8','#8b7355'],
+    paletteDesc: '深墨 · 森林綠 · 焦糖 · 米白 · 大地',
+    makeup: [
+      { step:'底妝', tip:'持久型粉底液+定妝蜜粉，確保全天維持乾淨俐落' },
+      { step:'眉毛', tip:'眉型偏向精緻工整，眉峰有角度呈現幹練感，顏色比髮色深一號' },
+      { step:'眼妝', tip:'深棕色眼影加強眼窩，細眼線貼睫毛根部，增加眼神的清晰度' },
+      { step:'腮紅', tip:'玫瑰棕斜刷，方向朝太陽穴，讓臉型更立體有精神' },
+      { step:'唇色', tip:'玫瑰紅或磚紅色唇膏，輪廓清晰，展現自信與專業感' },
+      { step:'定妝', tip:'持久定妝噴霧是職場必備，讓妝容撐過長會議和午餐' },
+    ],
+    hair: [
+      { style:'低盤髮', tip:'整齊俐落的低盤髮或法式扭髮，展現成熟幹練感' },
+      { style:'直髮後梳', tip:'頭髮吹直，1:9偏分後梳，乾淨俐落又不失個性' },
+      { style:'中低馬尾', tip:'中低度馬尾不會顯得過於學生氣，適合正式場合' },
+    ],
+    skincare: ['全天候持妝是關鍵——定妝噴霧比散粉更自然', '午餐後用吸油面紙再補定妝噴霧', '眼周容易脫妝可在眼影前上眼影底膏'],
+    accessories: ['手錶是職場的加分配件', '小型精緻胸針點綴西裝翻領', '皮帶讓整體更有型', '避免過大或過響亮的耳環'],
+    tips: ['剪裁和合身度比品牌更重要，建議讓裁縫微調讓衣服更合身。', '職場的色彩不需要全暗沉，用一個亮色配件展現個性。', '鞋子和包包保持乾淨整潔比款式更重要。'],
+    coach: '今天的職場重點：整體要「有意為之的精心感」。花5分鐘時間確認衣服沒有褶皺、鞋面無刮痕，細節決定第一印象。'
+  },
+  date: {
+    label: '浪漫約會',
+    emoji: '🌹',
+    figure: '💃',
+    title: 'Romantic Date — 讓你閃閃發光的約會造型',
+    advice: '約會穿搭的最高境界是：看起來像不是精心準備的，但其實每個細節都計算過了。選一件你穿起來最有自信的單品為主角，其餘配合它。',
+    items: [
+      { icon: '👗', cat: '洋裝', val: '花卉印花洋裝 / 鏤空設計洋裝' },
+      { icon: '🧣', cat: '外搭', val: '薄款蕾絲外套 / 輕薄開衫' },
+      { icon: '👜', cat: '包款', val: '迷你鏈條包 / 絨面信封包' },
+      { icon: '👡', cat: '鞋款', val: '細跟高跟鞋 / 繫帶涼鞋' },
+      { icon: '💫', cat: '配件', val: '珍珠耳環 / 細鏈項鍊' },
+      { icon: '🌸', cat: '香氛', val: '花香系 / 白麝香調香水' },
+    ],
+    palette: ['#f9e0e0','#c47a8a','#ffffff','#d4af90','#8b4560'],
+    paletteDesc: '粉玫瑰 · 玫瑰紅 · 白 · 裸膚 · 深莓',
+    makeup: [
+      { step:'底妝', tip:'光澤底妝為主，加高光在顴骨和T字，讓皮膚看起來飽滿發光' },
+      { step:'眉毛', tip:'柔和弓形眉，眉尾稍微上揚呈現輕盈感，顏色可比平常淺一點' },
+      { step:'眼妝', tip:'玫瑰金或珊瑚色眼影，下眼瞼輕刷臥蠶粉打亮，增加電眼感' },
+      { step:'腮紅', tip:'珊瑚粉腮紅大範圍圓圓地拍在笑肌，呈現可愛少女感' },
+      { step:'唇色', tip:'豆沙玫瑰或正紅唇色，依整體妝容決定——淡眼妝配濃唇，深眼妝配裸唇' },
+      { step:'香氛', tip:'約會前噴在手腕、耳後和膝蓋內側，體溫讓香氣更持久' },
+    ],
+    hair: [
+      { style:'浪漫大波浪', tip:'32mm棒卷，往後卷方向，完成後撥散用造型噴霧定型' },
+      { style:'半紮公主頭', tip:'取頭頂一半的頭髮，輕鬆紮起，抽出幾絲碎髮增加浪漫感' },
+      { style:'側邊辮子', tip:'一側編鬆散麻花辮至肩膀，配合耳環很有氛圍' },
+    ],
+    skincare: ['約會前一晚敷保濕面膜，讓底妝更服貼', '隨身攜帶唇膏補妝', '高光補在鼻梁和下巴讓臉型更精緻'],
+    accessories: ['珍珠配件呈現高雅氣質', '小包只帶必需品讓手勢更優雅', '細跟高跟能拉長腿型', '香水是最不能忘的配件'],
+    tips: ['穿你最有自信的那套，自信比任何技巧都更吸引人。', '衣服太緊或太不舒服的話會影響你的儀態，舒適才能展現最美姿態。', '香水噴在會動的部位（脈搏點）香氣更持久、更誘人。'],
+    coach: '今天的約會重點：整體要有一個「焦點」。可以是妝容、可以是配件、可以是衣服本身，但不要每個地方都搶眼，否則會顯得很雜亂。'
+  },
+  street: {
+    label: '街頭潮流',
+    emoji: '🔥',
+    figure: '🧑‍🎤',
+    title: 'Street Heat — 有態度的街頭風格',
+    advice: '大膽混搭是街頭風的核心。運動感單品配正式單品、oversized配slim fit、舊衣配新配件——衝突感才是美感。',
+    items: [
+      { icon: '👕', cat: '上衣', val: 'Oversized logo帽T / 裁剪T恤' },
+      { icon: '👖', cat: '下身', val: 'Cargo長褲 / 闊腿牛仔褲' },
+      { icon: '🧥', cat: '外搭', val: '滑板外套 / 夾克' },
+      { icon: '🎒', cat: '包款', val: '大容量後背包 / 迷你腰包' },
+      { icon: '👟', cat: '鞋款', val: '球鞋 / 厚底靴' },
+      { icon: '🕶️', cat: '配件', val: '個性太陽眼鏡 / 大帽子' },
+    ],
+    palette: ['#000000','#ff3c3c','#ffffff','#c4c4c4','#ffd700'],
+    paletteDesc: '黑 · 紅 · 白 · 灰 · 黃',
+    makeup: [
+      { step:'底妝', tip:'乾淨霧面底妝，遮瑕但不厚重，可局部遮瑕即可' },
+      { step:'眉毛', tip:'粗眉可以是街頭感的一部分，不要過度修整，保持野性感' },
+      { step:'眼妝', tip:'黑色眼線加粗到誇張，或嘗試白色下眼線打亮眼神' },
+      { step:'腮紅', tip:'可以省略，或選擇磚紅/深珊瑚色輕掃保持健康感即可' },
+      { step:'唇色', tip:'正紅/黑莓/深棕選一個大膽色，一個有力的唇色撐起整個妝' },
+      { step:'高光', tip:'可選擇帶閃粉質感的高光，讓整體更有衝擊感' },
+    ],
+    hair: [
+      { style:'高馬尾加扎帶', tip:'緊繃的高馬尾配上誇張的蝴蝶結或Y2K風髮圈' },
+      { style:'空氣感泡麵頭', tip:'捲度較緊的bob或中長髮，往外蓬的線條很有個性' },
+      { style:'兩股辮子', tip:'分成兩邊紮辮子，放鬆感十足，配帽子更帥' },
+    ],
+    skincare: ['街頭場合常在戶外，防曬不能少', '霧面定妝讓整體更hardedge', '嘴唇乾裂先用去角質護唇膏再上深色唇膏'],
+    accessories: ['帽子是街頭的標配', '疊戴項鍊很有層次感', '帆布包或腰包', '耳環可以大膽選誇張款'],
+    tips: ['衝突感才是美——正裝配球鞋、西裝配帽T，對比製造話題。', '配色可以大膽，但建議控制在3色以內不然容易凌亂。', '配件是街頭風的靈魂，一個特別的耳環或腰包就能讓整套不同。'],
+    coach: '今天的街頭重點：「有意識的混搭」。穿搭邏輯：一件正式單品 + 一件休閒單品 + 一個大膽配件 = 完美街頭公式。'
+  },
+  resort: {
+    label: '度假慵懶',
+    emoji: '🌊',
+    figure: '🏖️',
+    title: 'Resort Mood — 讓人以為你剛從峇里島回來',
+    advice: '飄逸的寬鬆版型、熱帶印花、草編配件是度假風三大法寶。重點是要讓人感受到陽光海風的自由感，即使你只是在城市裡。',
+    items: [
+      { icon: '👗', cat: '洋裝', val: '吊帶印花洋裝 / 麻料寬鬆上衣' },
+      { icon: '🩳', cat: '下身', val: '寬鬆棉麻短褲 / 碎花長裙' },
+      { icon: '👒', cat: '配件', val: '草帽 / 草編托特包' },
+      { icon: '🩴', cat: '鞋款', val: '人字拖 / 草編涼鞋' },
+      { icon: '😎', cat: '墨鏡', val: '大框墨鏡 / 貓眼太陽眼鏡' },
+      { icon: '📿', cat: '飾品', val: '貝殼項鍊 / 麻繩手環' },
+    ],
+    palette: ['#87ceeb','#f5deb3','#228b22','#ff9060','#ffffff'],
+    paletteDesc: '天空藍 · 沙灘米 · 椰林綠 · 夕陽橙 · 白',
+    makeup: [
+      { step:'底妝', tip:'防水BB霜或輕薄隔離，讓皮膚呼吸，度假要輕盈' },
+      { step:'修容', tip:'用古銅色修容粉在顴骨和鼻梁輕掃，製造曬後健康感' },
+      { step:'眼妝', tip:'銅色或珊瑚色眼影，防水眼線，防水睫毛膏是必備' },
+      { step:'腮紅', tip:'珊瑚橘或磚紅腮紅大塊拍，往兩側暈散，陽光曬後感' },
+      { step:'唇色', tip:'珊瑚紅/橘色唇彩，防水配方確保游泳後還能維持' },
+      { step:'古銅提亮', tip:'帶金粉的乳液抹在鎖骨和肩膀，在陽光下閃閃動人' },
+    ],
+    hair: [
+      { style:'辮子', tip:'各種辮子都適合度假——魚骨辮、麻花辮、玉米辮都很合適' },
+      { style:'海灘波浪', tip:'鹽水噴霧+手指抓出自然捲度，不完美的波浪才是度假感' },
+      { style:'草帽搭配低馬尾', tip:'最省力的度假造型，低馬尾+草帽，清爽又好看' },
+    ],
+    skincare: ['防曬SPF50是絕對必要，每2小時補擦', '攜帶蘆薈凍舒緩曬後皮膚', '防水防曬才能在海邊、游泳池也有保護'],
+    accessories: ['草帽是度假的靈魂配件', '貝殼/木珠飾品增加熱帶感', '大型托特包裝得下沙灘必需品', '防水手錶或不戴手錶'],
+    tips: ['度假風要「放鬆」，太精心的妝容反而失去度假感。', '印花不怕混搭，但花紋大小要有層次（大花配小花或條紋）。', '草編配件是最快速的度假感公式。'],
+    coach: '今天的度假重點：鬆、輕、自然。讓整套穿搭感覺輕盈，配件和妝容都要防水，這樣才能真正享受自由感。'
+  },
+  athleisure: {
+    label: '運動休閒',
+    emoji: '⚡',
+    figure: '🤸‍♀️',
+    title: 'Athleisure — 從健身房到咖啡廳的無縫切換',
+    advice: '高品質的運動服不只是穿去健身，搭配對了可以去上班、去逛街、去咖啡廳。關鍵是選料好、剪裁好的運動單品，配上一件正常休閒外套。',
+    items: [
+      { icon: '🩱', cat: '上衣', val: '運動背心 / 短版衛衣' },
+      { icon: '🩳', cat: '下身', val: 'Leggings / 訓練短褲' },
+      { icon: '🧥', cat: '外搭', val: '拉鍊衛衣 / 輕薄風衣' },
+      { icon: '🎒', cat: '包款', val: '運動後背包 / 腰包' },
+      { icon: '👟', cat: '鞋款', val: '訓練鞋 / 厚底運動鞋' },
+      { icon: '⌚', cat: '配件', val: '運動手環 / 防水手錶' },
+    ],
+    palette: ['#000000','#ffffff','#00c4cc','#ff6b6b','#c4c4c4'],
+    paletteDesc: '黑 · 白 · 電藍 · 活力紅 · 灰',
+    makeup: [
+      { step:'底妝', tip:'防汗防水BB霜，輕薄但能遮住紅潤感，重點做好防汗' },
+      { step:'眉毛', tip:'防水眉筆或眉膏固定眉毛，運動後眉型不走位' },
+      { step:'眼妝', tip:'防水眼線筆簡單描繪，省略眼影也沒關係，防水睫毛膏' },
+      { step:'腮紅', tip:'省略腮紅，運動後臉頰自然會有好看的紅潤感' },
+      { step:'唇色', tip:'帶護唇效果的有色護唇膏，自然又不脫妝' },
+      { step:'定妝', tip:'霧面防汗定妝噴霧是關鍵，噴完等30秒再出發' },
+    ],
+    hair: [
+      { style:'高馬尾', tip:'運動場合最實用，整齊且不影響視線，用大圈橡皮筋減少傷害' },
+      { style:'丸子頭', tip:'快速整理，看起來仍然整潔，適合強度較低的運動場合' },
+      { style:'辮子盤頭', tip:'長髮運動必備，不會在臉上飛舞，完成後可以戴帽子或頭巾' },
+    ],
+    skincare: ['運動前不要上太厚的底妝讓皮膚無法透氣', '運動後盡快卸妝洗臉，避免毛孔阻塞', '防曬不能省，尤其戶外運動'],
+    accessories: ['運動手環監測心率', '無線耳機是標配', '頭帶或頭巾吸汗兼造型', '運動腰包裝手機鑰匙'],
+    tips: ['Athleisure的關鍵是「運動感但不是要去練習』的感覺。', '選擇高品質面料，運動服的剪裁和材質決定整體質感。', '一件時尚的外套可以讓整套運動穿搭穿去普通場合。'],
+    coach: '今天的運動重點：功能性第一，但不放棄時尚。選一個亮色調為整體提升活力感，鞋子是整套的靈魂，選一雙你喜歡的。'
+  },
+  dark: {
+    label: '暗黑個性',
+    emoji: '🖤',
+    figure: '🦇',
+    title: 'Dark Aesthetic — 有靈魂的暗色系美學',
+    advice: '暗黑穿搭不是只有全黑，是用深沉色調搭配獨特材質和配件，表達具有深度的個人風格。皮革、蕾絲、絲絨都是好朋友。',
+    items: [
+      { icon: '👚', cat: '上衣', val: '皮革上衣 / 蕾絲罩衫' },
+      { icon: '👖', cat: '下身', val: '黑色緊身褲 / 層疊短裙' },
+      { icon: '🧥', cat: '外搭', val: '皮革機車夾克 / 長版黑色外套' },
+      { icon: '👜', cat: '包款', val: '硬殼黑色包 / 金鍊鑲邊小包' },
+      { icon: '👢', cat: '鞋款', val: '厚底靴 / 尖頭踝靴' },
+      { icon: '💀', cat: '配件', val: '銀質戒指 / 鍊條腰帶 / 黑色手套' },
+    ],
+    palette: ['#000000','#1a1a2e','#6b0f1a','#5c2d91','#c0c0c0'],
+    paletteDesc: '黑 · 深夜藍 · 深酒紅 · 暗紫 · 銀',
+    makeup: [
+      { step:'底妝', tip:'瓷白霧面底妝，對比感是暗黑美學的核心' },
+      { step:'眉毛', tip:'眉峰明顯的稜角眉，眉色深黑，輪廓清晰是重點' },
+      { step:'眼妝', tip:'煙燻眼是經典——黑色眼影由內而外暈染，下眼瞼描黑眼線' },
+      { step:'腮紅', tip:'淡棕色修容取代腮紅，讓臉部更立體而非紅潤' },
+      { step:'唇色', tip:'深酒紅/黑莓/黑棕色唇色，唇線可以比嘴唇大一點加強存在感' },
+      { step:'高光', tip:'在鼻梁和眼頭用銀色高光打亮，與暗沉底妝形成戲劇性對比' },
+    ],
+    hair: [
+      { style:'直髮簾', tip:'光滑的中分直髮，配合白皙底妝特別有力量感' },
+      { style:'蓬鬆捲髮', tip:'70年代搖滾感的大波浪，用大卷棒往後卷完成後撥散' },
+      { style:'複雜造型', tip:'麻花辮盤髮或各種夾髮、紮髮配合黑色髮飾，層次感十足' },
+    ],
+    skincare: ['暗黑妝容較厚重，卸妝要徹底避免毛孔阻塞', '深色唇色要先保濕護唇才好看', '白皙皮膚是暗黑妝的基底，做好保濕'],
+    accessories: ['銀飾比金飾更適合暗黑風', '疊戴多條項鍊或手環', '腰帶或腰鍊幫助定義腰線', '帽子、頭紗或各種帽飾都很搭'],
+    tips: ['暗黑不等於邋遢——每個細節要精心，才能顯出「有靈魂」而非「沒洗澡」。', '在全黑中加一個銀或深紫的焦點，讓整體有層次感。', '材質混搭是關鍵：皮革+絲絨、蕾絲+金屬，材質衝突創造深度。'],
+    coach: '今天的暗黑重點：精緻是關鍵詞。底妝要瓷白乾淨，眼妝要清晰，配件要精選。只有每個細節都照顧到，才能展現真正的暗黑美學。'
+  },
+  korean: {
+    label: '韓系清甜',
+    emoji: '🌸',
+    figure: '🎀',
+    title: 'K-Style Sweet — 韓式清透感的少女心',
+    advice: '韓系穿搭的關鍵是「恰到好處」——不會太甜也不太成熟，剛剛好的可愛。以淡色調為主，加上小細節就能呈現清甜感。',
+    items: [
+      { icon: '👚', cat: '上衣', val: '短版針織上衣 / 蕾絲領衬衫' },
+      { icon: '👖', cat: '下身', val: '格紋百褶裙 / 高腰直筒短褲' },
+      { icon: '🧥', cat: '外搭', val: '粉色格紋短外套 / 軟糯針織開衫' },
+      { icon: '🎒', cat: '包款', val: '小熊包 / 水桶包 / 月牙包' },
+      { icon: '👟', cat: '鞋款', val: '厚底小白鞋 / 瑪莉珍鞋' },
+      { icon: '🎀', cat: '配件', val: '蝴蝶結髮夾 / 珍珠細鍊' },
+    ],
+    palette: ['#f9e0e0','#ffd1dc','#c8e6c9','#e8d5b0','#ffffff'],
+    paletteDesc: '粉玫瑰 · 少女粉 · 薄荷綠 · 奶茶 · 白',
+    makeup: [
+      { step:'底妝', tip:'透明感底妝，放大毛孔部分遮瑕即可，保留「好皮膚」的感覺' },
+      { step:'眉毛', tip:'平眉是韓系的標誌，毛流感自然眉，不要角度太明顯' },
+      { step:'眼妝', tip:'大地色或玫瑰色眼影，臥蠶必打亮，讓眼睛看起來水汪汪' },
+      { step:'腮紅', tip:'韓系腮紅範圍大，從鼻翼橫跨兩頰，呈現「病嬌」感粉嫩' },
+      { step:'唇色', tip:'漸層咬唇妝——唇中深唇外淡，或水潤玫瑰色塗滿' },
+      { step:'高光', tip:'鼻梁和淚溝輕點高光，讓整張臉有立體感又不失韓系透明感' },
+    ],
+    hair: [
+      { style:'空氣感公主頭', tip:'取頭頂一半的頭髮輕鬆固定，拉出碎髮，搭配蝴蝶結髮夾' },
+      { style:'兩股辮髮帶', tip:'超簡單的韓系造型——寬版髮帶壓下，兩側頭髮卷出S形' },
+      { style:'C字內彎', tip:'韓系經典：用吹風機刷頭吹出C形弧度，髮尾向內收' },
+    ],
+    skincare: ['韓系妝容以透明感皮膚為基礎，保濕很重要', '嫩Q感底妝前用保濕精華打底', '薄薄一層光澤妝讓皮膚看起來水水的'],
+    accessories: ['蝴蝶結髮夾是韓系標配', '珍珠耳環或細圈耳環', '小巧可愛的包包', '蕾絲或格紋隨身物品增加少女感'],
+    tips: ['韓系不是越粉越好，選對「粉」的色調（冷粉vs暖粉）才好看。', '臥蠶妝是讓眼睛看起來水汪汪的關鍵，值得練習。', '配件保持可愛但不要過多，選1-2個重點。'],
+    coach: '今天的韓系重點：清透肌膚是一切的基礎，再搭配可愛小配件就完成了。不需要每個地方都超可愛，讓一個元素當主角就好。'
+  },
+  vintage: {
+    label: '復古文青',
+    emoji: '📻',
+    figure: '🎭',
+    title: 'Vintage Soul — 穿出時光機的質感風格',
+    advice: '復古穿搭是透過對過去時代的致敬，混入現代元素。70年代的大地色、80年代的肩線、90年代的格紋——選一個時代為靈感，加入現代感配件。',
+    items: [
+      { icon: '👚', cat: '上衣', val: '格紋小圓領衫 / 復古印花blouse' },
+      { icon: '👖', cat: '下身', val: '高腰燈芯絨長褲 / 格紋A字裙' },
+      { icon: '🧥', cat: '外搭', val: '復古飛行夾克 / 毛呢短外套' },
+      { icon: '🎒', cat: '包款', val: '復古相機包 / 編織提籃' },
+      { icon: '👟', cat: '鞋款', val: '厚底樂福鞋 / 瑪莉珍 / 帆布鞋' },
+      { icon: '📷', cat: '配件', val: '貝雷帽 / 絲巾 / 復古眼鏡框' },
+    ],
+    palette: ['#c4a882','#8b6f47','#5c4033','#e8c97a','#d4c5a9'],
+    paletteDesc: '焦糖棕 · 泥土棕 · 深咖 · 復古黃 · 燕麥',
+    makeup: [
+      { step:'底妝', tip:'啞光底妝帶點復古感，不要過於光澤，粉撲輕壓呈現膠片感' },
+      { step:'眉毛', tip:'70年代風格細眉或複古粗眉，依搭配的復古時代決定眉型' },
+      { step:'眼妝', tip:'復古棕色煙燻或60年代眼線誇張至眼尾延伸翹起' },
+      { step:'腮紅', tip:'復古感的磚紅色腮紅圓圓地拍在笑肌，70年代必備' },
+      { step:'唇色', tip:'磚紅/棕紅/橘紅——復古唇色濃烈而飽和，是整個妝的靈魂' },
+      { step:'整體', tip:'整體妝容要有一個復古時代的統一感，不要混搭太多風格' },
+    ],
+    hair: [
+      { style:'復古大波浪', tip:'用較大捲棒做鬆散大波浪，定型後不要梳開，保留原始捲度' },
+      { style:'貝雷帽側戴', tip:'把頭髮藏在貝雷帽下或露出幾絲碎髮，法式復古感' },
+      { style:'60年代直髮', tip:'完全吹直+劉海，搭配誇張眼線，Audrey Hepburn風格' },
+    ],
+    skincare: ['復古妝容較乾，擦好保濕讓肌膚不顯老氣', '厚重底妝前的隔離和打底很重要', '磚紅唇色前先做好唇部護理'],
+    accessories: ['貝雷帽是文青復古的靈魂', '絲巾可以繫頭頂或頸部', '圓形金框或玳瑁紋眼鏡', '復古風格的胸針或別針'],
+    tips: ['復古的關鍵是整體統一感——選定一個年代，圍繞它搭配。', '在全復古中加一個現代元素（一雙現代感的鞋），避免像「穿了戲服」。', '復古配件往往在二手店、古著店找到最好的，而且更有故事感。'],
+    coach: '今天的復古重點：選一個時代靈感（60/70/80年代），整體圍繞它，再加一個現代單品「接地」，這樣才是復古而非cosplay。'
+  }
+};
+
+const WEATHER_ICONS = {
+  0:'☀️', 1:'🌤️', 2:'⛅', 3:'☁️',
+  45:'🌫️', 48:'🌫️',
+  51:'🌦️', 53:'🌦️', 55:'🌧️',
+  61:'🌧️', 63:'🌧️', 65:'🌧️',
+  71:'❄️', 73:'❄️', 75:'❄️', 77:'🌨️',
+  80:'🌦️', 81:'🌧️', 82:'⛈️',
+  85:'🌨️', 86:'🌨️',
+  95:'⛈️', 96:'⛈️', 99:'⛈️'
+};
+
+const WEATHER_LABELS = {
+  0:'晴天', 1:'大致晴朗', 2:'局部多雲', 3:'陰天',
+  45:'霧', 48:'結霜霧',
+  51:'毛毛雨', 53:'毛毛雨', 55:'毛毛雨',
+  61:'小雨', 63:'中雨', 65:'大雨',
+  71:'小雪', 73:'中雪', 75:'大雪', 77:'冰晶',
+  80:'短暫陣雨', 81:'陣雨', 82:'強陣雨',
+  85:'陣雪', 86:'強陣雪',
+  95:'雷雨', 96:'雷雨夾冰雹', 99:'強烈雷雨'
+};
+
+// ═══════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════
+const state = {
+  style: 'elegant',
+  weather: null,
+  bodyType: '梨形',
+  skinTone: '冷白',
+  colors: ['大地色'],
+  beautyTab: 'makeup',
+  favorites: JSON.parse(localStorage.getItem('styleai_favs') || '[]')
+};
+
+// ═══════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  renderAll();
+  bindEvents();
+  renderFavorites();
+});
+
+// ═══════════════════════════════════════════
+//  BIND EVENTS
+// ═══════════════════════════════════════════
+function bindEvents() {
+  // Theme
+  document.getElementById('themeBtn').addEventListener('click', () => {
+    const html = document.documentElement;
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
+  });
+
+  // Style select
+  document.getElementById('styleSelect').addEventListener('change', (e) => {
+    state.style = e.target.value;
+    renderAll();
+  });
+
+  // Generate
+  document.getElementById('generateBtn').addEventListener('click', () => {
+    state.style = document.getElementById('styleSelect').value;
+    renderAll(true);
+  });
+
+  // Save
+  document.getElementById('saveBtn').addEventListener('click', saveLook);
+
+  // Print
+  document.getElementById('printBtn').addEventListener('click', () => window.print());
+
+  // Chips: body
+  document.getElementById('bodyChips').addEventListener('click', (e) => {
+    if (!e.target.classList.contains('chip')) return;
+    document.querySelectorAll('#bodyChips .chip').forEach(c => c.classList.remove('active'));
+    e.target.classList.add('active');
+    state.bodyType = e.target.dataset.val;
+  });
+
+  // Swatches: skin
+  document.getElementById('skinSwatches').addEventListener('click', (e) => {
+    const sw = e.target.closest('.swatch');
+    if (!sw) return;
+    document.querySelectorAll('#skinSwatches .swatch').forEach(s => s.classList.remove('active'));
+    sw.classList.add('active');
+    state.skinTone = sw.dataset.tone;
+  });
+
+  // Chips: color (multi)
+  document.getElementById('colorChips').addEventListener('click', (e) => {
+    if (!e.target.classList.contains('chip')) return;
+    e.target.classList.toggle('active');
+    state.colors = [...document.querySelectorAll('#colorChips .chip.active')].map(c => c.dataset.val);
+    if (!state.colors.length) {
+      e.target.classList.add('active');
+      state.colors = [e.target.dataset.val];
+    }
+  });
+
+  // Budget chips
+  document.getElementById('budgetChips').addEventListener('click', (e) => {
+    if (!e.target.classList.contains('chip')) return;
+    document.querySelectorAll('#budgetChips .chip').forEach(c => c.classList.remove('active'));
+    e.target.classList.add('active');
+  });
+
+  // Weather
+  document.getElementById('locateBtn').addEventListener('click', loadWeather);
+  document.getElementById('retryBtn').addEventListener('click', loadWeather);
+
+  // Beauty tabs
+  document.getElementById('beautyTabNav').addEventListener('click', (e) => {
+    const btn = e.target.closest('.tab-btn');
+    if (!btn) return;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.beautyTab = btn.dataset.tab;
+    renderBeauty();
+  });
+}
+
+// ═══════════════════════════════════════════
+//  RENDER ALL
+// ═══════════════════════════════════════════
+function renderAll(animate = false) {
+  const data = STYLES[state.style];
+  if (!data) return;
+  const adjusted = adjustByWeather(data);
+
+  // Figure / label
+  document.getElementById('outfitFigure').textContent = data.figure;
+  document.getElementById('styleLabel').textContent = data.label;
+  document.getElementById('lookTitle').textContent = data.title;
+
+  // Advice
+  let adviceText = adjusted.advice;
+  if (state.weather) {
+    adviceText += `\n\n🌡️ 天氣提醒：${buildWeatherTip(state.weather)}`;
+  }
+  document.getElementById('adviceText').textContent = adviceText;
+
+  // Outfit grid
+  renderOutfitGrid(adjusted.items);
+
+  // Palette
+  renderPalette(adjusted.palette, adjusted.paletteDesc);
+
+  // Beauty
+  renderBeauty(adjusted);
+
+  // Accessories
+  renderAccessories(adjusted);
+
+  // Style tips
+  renderStyleTips(adjusted);
+
+  // Animate
+  if (animate) {
+    document.querySelectorAll('.outfit-item, .pill').forEach(el => {
+      el.style.animation = 'none';
+      void el.offsetWidth;
+      el.style.animation = 'fadeSlide .4s ease forwards';
+    });
+    document.getElementById('outfitFigure').classList.add('pulse');
+    setTimeout(() => document.getElementById('outfitFigure').classList.remove('pulse'), 2000);
+  }
+}
+
+// ═══════════════════════════════════════════
+//  ADJUST BY WEATHER
+// ═══════════════════════════════════════════
+function adjustByWeather(data) {
+  const d = JSON.parse(JSON.stringify(data));
+  if (!state.weather) return d;
+  const w = state.weather;
+  const temp = w.temp;
+  const code = w.code;
+  const rain = w.rain;
+
+  // Rain adjustments
+  if (rain > 60 || code >= 61) {
+    d.items = d.items.map(i => {
+      if (i.cat === '鞋款') return { ...i, val: i.val + '（建議選防水款或換穿雨靴）' };
+      if (i.cat === '外搭' || i.cat === '外套') return { ...i, val: i.val + '（備一件防雨外套）' };
+      return i;
+    });
+    if (!d.accessories.includes('折疊雨傘')) d.accessories.unshift('折疊雨傘（今天降雨機率高）');
+  }
+
+  // Cold adjustments
+  if (temp < 15) {
+    d.items = d.items.map(i => {
+      if (i.cat === '外搭' || i.cat === '外套') return { ...i, val: i.val + '（加厚外套保暖）' };
+      return i;
+    });
+    if (!d.accessories.includes('圍巾')) d.accessories.unshift('圍巾或脖圍保暖');
+  }
+
+  // Hot adjustments
+  if (temp > 28) {
+    d.makeup = d.makeup.map(s => {
+      if (s.step === '底妝') return { ...s, tip: '防汗防水底妝，定妝噴霧必備。' + s.tip };
+      return s;
+    });
+    if (!d.skincare.some(s => s.includes('防汗'))) {
+      d.skincare.unshift('高溫天氣需防汗定妝噴霧');
+    }
+  }
+
+  // UV adjustments
+  if (w.uv >= 6) {
+    if (!d.accessories.includes('防曬帽')) d.accessories.push('防曬帽（紫外線指數高）');
+    if (!d.skincare.includes('SPF50 防曬必擦')) d.skincare.unshift('SPF50 防曬必擦，每2小時補擦');
+  }
+
+  return d;
+}
+
+function buildWeatherTip(w) {
+  const tips = [];
+  if (w.rain > 60) tips.push('降雨機率高，別忘了雨傘和防水鞋');
+  if (w.temp < 12) tips.push('氣溫偏低，建議多加一層保暖');
+  else if (w.temp < 20) tips.push('早晚微涼，帶一件外套備用');
+  else if (w.temp > 28) tips.push('天氣炎熱，選擇透氣輕薄的材質');
+  if (w.uv >= 6) tips.push('紫外線強，防曬和帽子很重要');
+  if (w.wind > 30) tips.push('風大，避免過於飄逸的材質');
+  return tips.length ? tips.join('；') : '天氣舒適，盡情享受造型吧！';
+}
+
+// ═══════════════════════════════════════════
+//  RENDER FUNCTIONS
+// ═══════════════════════════════════════════
+function renderOutfitGrid(items) {
+  const grid = document.getElementById('outfitGrid');
+  grid.innerHTML = items.map(item => `
+    <div class="outfit-item anim">
+      <div class="icon">${item.icon}</div>
+      <div class="cat">${item.cat}</div>
+      <div class="val">${item.val}</div>
+    </div>
+  `).join('');
+}
+
+function renderPalette(colors, desc) {
+  const strip = document.getElementById('palettStrip');
+  strip.innerHTML = `
+    ${colors.map(c => `<div class="palette-dot" style="background:${c}" title="${c}"></div>`).join('')}
+    <div class="palette-label">${desc}</div>
+  `;
+}
+
+function renderBeauty(data) {
+  const d = data || STYLES[state.style];
+  const adjusted = data || adjustByWeather(STYLES[state.style]);
+  const container = document.getElementById('beautyContent');
+  const tab = state.beautyTab;
+
+  if (tab === 'makeup') {
+    container.innerHTML = `
+      <div class="makeup-steps">
+        ${adjusted.makeup.map((s, i) => `
+          <div class="makeup-step anim" style="animation-delay:${i * .05}s">
+            <div class="step-num">${i + 1}</div>
+            <div class="step-content">
+              <div class="step-name">${s.step}</div>
+              <div class="step-tip">${s.tip}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  } else if (tab === 'hair') {
+    container.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        ${adjusted.hair.map((h, i) => `
+          <div class="outfit-item anim" style="text-align:left;animation-delay:${i * .08}s">
+            <div style="font-weight:600;font-size:13px;margin-bottom:4px;">💇‍♀️ ${h.style}</div>
+            <div style="font-size:12px;color:var(--ink2);line-height:1.6;">${h.tip}</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  } else {
+    container.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        ${adjusted.skincare.map((s, i) => `
+          <div class="pill anim" style="animation-delay:${i * .08}s">
+            <span>💧</span> ${s}
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+}
+
+function renderAccessories(data) {
+  const panel = document.getElementById('accessoriesPanel');
+  panel.innerHTML = `
+    <div class="pill-list" style="margin-bottom:14px;">
+      ${data.accessories.map((a, i) => `
+        <span class="pill anim" style="animation-delay:${i * .05}s">${a}</span>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderStyleTips(data) {
+  const tips = document.getElementById('styleTips');
+  tips.innerHTML = `
+    <div style="margin-bottom:12px;padding:12px;background:var(--accent2);border-radius:var(--radius-sm);border:1px solid var(--accent);font-style:italic;">${data.coach}</div>
+    <ul style="padding-left:16px;margin:0;">
+      ${data.tips.map(t => `<li style="margin-bottom:8px;">${t}</li>`).join('')}
+    </ul>
+  `;
+}
+
+// ═══════════════════════════════════════════
+//  WEATHER
+// ═══════════════════════════════════════════
+async function loadWeather() {
+  const locateBtn = document.getElementById('locateBtn');
+  const statusMsg = document.getElementById('weatherStatusMsg');
+  const display = document.getElementById('weatherDisplay');
+  const retryBtn = document.getElementById('retryBtn');
+
+  locateBtn.innerHTML = '<span class="spinner"></span> 定位中...';
+  locateBtn.disabled = true;
+  statusMsg.className = 'status-msg info';
+  statusMsg.textContent = '正在取得位置與天氣資料...';
+
+  if (!navigator.geolocation) {
+    statusMsg.className = 'status-msg error';
+    statusMsg.textContent = '你的瀏覽器不支援定位功能。';
+    locateBtn.disabled = false;
+    locateBtn.textContent = '📍 取得天氣';
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    async ({ coords }) => {
+      try {
+        const { latitude, longitude } = coords;
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,apparent_temperature,precipitation_probability,weather_code,wind_speed_10m,uv_index,relative_humidity_2m&forecast_days=1&timezone=auto&current=temperature_2m,weather_code,wind_speed_10m,relative_humidity_2m`;
+        const res = await fetch(url);
+        const json = await res.json();
+        const { hourly } = json;
+
+        const now = new Date();
+        const idx = hourly.time.findIndex(t => new Date(t) >= now);
+        const safeIdx = idx >= 0 ? idx : 0;
+
+        state.weather = {
+          temp: Math.round(hourly.temperature_2m[safeIdx]),
+          apparent: Math.round(hourly.apparent_temperature[safeIdx]),
+          code: Number(hourly.weather_code[safeIdx] ?? 0),
+          rain: hourly.precipitation_probability[safeIdx] ?? 0,
+          wind: Math.round(hourly.wind_speed_10m[safeIdx] ?? 0),
+          uv: hourly.uv_index[safeIdx] ?? 0,
+          humidity: hourly.relative_humidity_2m[safeIdx] ?? 0,
+        };
+        state.weather.icon = WEATHER_ICONS[state.weather.code] || '🌡️';
+        state.weather.label = WEATHER_LABELS[state.weather.code] || '未知';
+
+        renderWeather(hourly, safeIdx);
+        display.style.display = 'block';
+        statusMsg.className = 'status-msg success';
+        statusMsg.textContent = `✅ 天氣同步成功！穿搭建議已根據今日天氣自動調整。`;
+        retryBtn.style.display = 'inline-flex';
+        locateBtn.style.display = 'none';
+        renderAll();
+      } catch (err) {
+        statusMsg.className = 'status-msg error';
+        statusMsg.textContent = '天氣資料讀取失敗：' + err.message;
+        locateBtn.disabled = false;
+        locateBtn.innerHTML = '📍 重試';
+      }
+    },
+    (err) => {
+      statusMsg.className = 'status-msg warn';
+      statusMsg.textContent = `定位失敗：${err.message}。請確認已允許定位權限（需 HTTPS 環境）。`;
+      locateBtn.disabled = false;
+      locateBtn.innerHTML = '📍 重試';
+    }
+  );
+}
+
+function renderWeather(hourly, idx) {
+  const w = state.weather;
+  document.getElementById('wIcon').textContent = w.icon;
+  document.getElementById('wTemp').textContent = `${w.temp}°C`;
+  document.getElementById('wDesc').textContent = `${w.label}　體感 ${w.apparent}°C`;
+  document.getElementById('wMeta').textContent = `相對濕度 ${w.humidity}%`;
+  document.getElementById('wHumidity').textContent = `${w.humidity}%`;
+  document.getElementById('wRain').textContent = `${w.rain}%`;
+  document.getElementById('wWind').textContent = `${w.wind}`;
+
+  // UV bar
+  const uvPct = Math.min((w.uv / 11) * 100, 100);
+  document.getElementById('uvMarker').style.left = uvPct + '%';
+  const uvLevel = w.uv <= 2 ? '低' : w.uv <= 5 ? '中等' : w.uv <= 7 ? '高' : w.uv <= 10 ? '極高' : '危險';
+  document.getElementById('wUvLabel').textContent = `${w.uv.toFixed(1)} (${uvLevel})`;
+
+  // Hourly
+  const scroll = document.getElementById('hourlyScroll');
+  const now = new Date();
+  scroll.innerHTML = hourly.time.slice(idx, idx + 12).map((t, i) => {
+    const isNow = i === 0;
+    const d = new Date(t);
+    const h = d.getHours().toString().padStart(2, '0') + ':00';
+    const code = Number(hourly.weather_code[idx + i] ?? 0);
+    const temp = Math.round(hourly.temperature_2m[idx + i] ?? 0);
+    const rain = hourly.precipitation_probability[idx + i] ?? 0;
+    return `
+      <div class="hourly-card ${isNow ? 'now' : ''}">
+        <div class="h-time">${isNow ? '現在' : h}</div>
+        <div class="h-icon">${WEATHER_ICONS[code] || '🌡️'}</div>
+        <div class="h-temp">${temp}°</div>
+        <div class="h-rain">💧${rain}%</div>
+      </div>
+    `;
+  }).join('');
+
+  // Weather tips
+  const tipsContainer = document.getElementById('weatherTips');
+  const tips = buildWeatherTips(w);
+  if (tips.length) {
+    tipsContainer.innerHTML = `
+      <div class="sec-label" style="margin-bottom:8px;">穿搭提示</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        ${tips.map(t => `<div class="status-msg ${t.type}">${t.msg}</div>`).join('')}
+      </div>
+    `;
+  }
+}
+
+function buildWeatherTips(w) {
+  const tips = [];
+  if (w.rain > 70) tips.push({ type: 'warn', msg: `☔ 降雨機率 ${w.rain}%，強烈建議攜帶雨傘、選防水鞋款` });
+  else if (w.rain > 40) tips.push({ type: 'info', msg: `🌂 降雨機率 ${w.rain}%，建議備好折疊傘` });
+  if (w.temp < 12) tips.push({ type: 'info', msg: `🧥 氣溫 ${w.temp}°C，需要厚外套和圍巾保暖` });
+  else if (w.temp < 20) tips.push({ type: 'info', msg: `🌬️ 氣溫 ${w.temp}°C，早晚涼，帶一件薄外套` });
+  else if (w.temp > 30) tips.push({ type: 'warn', msg: `🌡️ 氣溫 ${w.temp}°C，高溫！選擇透氣輕薄材質，補充水分` });
+  if (w.uv >= 8) tips.push({ type: 'warn', msg: `☀️ 紫外線指數 ${w.uv.toFixed(1)}（極高），防曬帽+SPF50防曬不可少` });
+  else if (w.uv >= 5) tips.push({ type: 'info', msg: `🧴 紫外線指數 ${w.uv.toFixed(1)}（中高），記得補防曬` });
+  if (w.wind > 40) tips.push({ type: 'info', msg: `💨 風速 ${w.wind} km/h，避免裙擺過長或帽子太大` });
+  return tips;
+}
+
+// ═══════════════════════════════════════════
+//  FAVORITES
+// ═══════════════════════════════════════════
+function saveLook() {
+  const data = STYLES[state.style];
+  const now = new Date();
+  const fav = {
+    id: Date.now(),
+    style: state.style,
+    label: data.label,
+    emoji: data.emoji,
+    note: document.getElementById('noteArea').value || '',
+    date: `${now.getMonth() + 1}/${now.getDate()}`,
+    weather: state.weather ? `${state.weather.temp}°C ${state.weather.label}` : null,
+  };
+  state.favorites.unshift(fav);
+  if (state.favorites.length > 10) state.favorites.pop();
+  localStorage.setItem('styleai_favs', JSON.stringify(state.favorites));
+  renderFavorites();
+
+  const btn = document.getElementById('saveBtn');
+  btn.textContent = '✅';
+  setTimeout(() => btn.textContent = '💾', 1500);
+}
+
+function renderFavorites() {
+  const list = document.getElementById('favList');
+  if (!state.favorites.length) {
+    list.innerHTML = `<div style="font-size:13px;color:var(--muted);text-align:center;padding:14px 0;">尚無儲存的穿搭<br>點擊 💾 來儲存今日搭配</div>`;
+    return;
+  }
+  list.innerHTML = state.favorites.map(f => `
+    <div class="fav-item" data-id="${f.id}">
+      <span class="fav-emoji">${f.emoji}</span>
+      <div style="flex:1;">
+        <div class="fav-name">${f.label}</div>
+        ${f.weather ? `<div class="fav-date">${f.date} · ${f.weather}</div>` : `<div class="fav-date">${f.date}</div>`}
+      </div>
+      <button class="fav-del" data-id="${f.id}" title="刪除">✕</button>
+    </div>
+  `).join('');
+
+  list.querySelectorAll('.fav-del').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const id = Number(e.currentTarget.dataset.id);
+      state.favorites = state.favorites.filter(f => f.id !== id);
+      localStorage.setItem('styleai_favs', JSON.stringify(state.favorites));
+      renderFavorites();
+    });
+  });
+
+  list.querySelectorAll('.fav-item').forEach(item => {
+    item.addEventListener('click', (e) => {
+      if (e.target.classList.contains('fav-del')) return;
+      const id = Number(item.dataset.id);
+      const fav = state.favorites.find(f => f.id === id);
+      if (fav) {
+        document.getElementById('styleSelect').value = fav.style;
+        state.style = fav.style;
+        renderAll(true);
+      }
+    });
+  });
+}
+</script>
+</body>
+</html>
