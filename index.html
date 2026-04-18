@@ -272,46 +272,113 @@ textarea { resize: vertical; min-height: 72px; }
 .btn-accent:hover { filter: brightness(1.1); transform: translateY(-1px); }
 .btn-block { width: 100%; }
 
-/* ── Outfit Display ── */
-.outfit-hero {
-  min-height: 200px;
-  background: linear-gradient(135deg, var(--surface) 0%, var(--accent2) 100%);
-  border-radius: var(--radius);
+/* ── eDM Catalog ── */
+.edm-wrap { margin-bottom: 20px; }
+.edm-header {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--ink);
+  margin-bottom: 14px;
+}
+.edm-brand-line { display: flex; align-items: center; gap: 10px; }
+.edm-logo-uniqlo {
+  font-size: 15px; font-weight: 900; letter-spacing: .12em;
+  color: #fff; background: #E40026;
+  padding: 3px 10px 3px 9px;
+  border-radius: 3px;
+  line-height: 1.6;
+}
+.edm-logo-gu {
+  font-size: 15px; font-weight: 900; letter-spacing: .12em;
+  color: #fff; background: #000;
+  padding: 3px 10px;
+  border-radius: 3px;
+  line-height: 1.6;
+}
+.edm-x { font-size: 13px; color: var(--muted); }
+.edm-style-name {
+  font-family: "Playfair Display", serif;
+  font-size: 17px; font-weight: 600;
+  color: var(--ink);
+}
+.edm-season {
+  font-size: 11px; color: var(--muted);
+  letter-spacing: .15em; text-transform: uppercase;
+}
+.edm-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+@media (max-width: 900px) { .edm-grid { grid-template-columns: repeat(2, 1fr); } }
+.edm-card {
+  background: #fff;
+  border: 1px solid #e8e0d8;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: var(--trans);
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+  color: inherit;
+}
+[data-theme="dark"] .edm-card { background: var(--surface); border-color: var(--border); }
+.edm-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,.12); }
+.edm-card-img {
+  aspect-ratio: 3/4;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 56px;
   position: relative;
   overflow: hidden;
-  border: 1px dashed var(--border2);
 }
-.outfit-hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at 30% 0%, rgba(201,169,110,.15) 0%, transparent 60%);
+.edm-badge-wrap {
+  position: absolute; top: 8px; left: 8px;
+  display: flex; flex-direction: column; gap: 4px;
 }
-.outfit-figure {
-  font-size: 80px;
-  line-height: 1;
-  position: relative;
-  z-index: 1;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,.15));
+.edm-brand-badge {
+  font-size: 9px; font-weight: 900; letter-spacing: .1em;
+  padding: 2px 7px; border-radius: 2px; line-height: 1.6;
+}
+.badge-u { background: #E40026; color: #fff; }
+.badge-g { background: #000; color: #fff; }
+.edm-tag-badge {
+  font-size: 9px; font-weight: 700; letter-spacing: .05em;
+  padding: 2px 6px; border-radius: 2px; line-height: 1.6;
+  background: #fff; color: #E40026; border: 1px solid #E40026;
+  align-self: flex-start;
+}
+.edm-info { padding: 9px 11px 11px; }
+.edm-name {
+  font-size: 11.5px; font-weight: 600; color: var(--ink);
+  line-height: 1.45; margin-bottom: 2px;
+}
+.edm-sub { font-size: 10px; color: var(--muted); margin-bottom: 5px; }
+.edm-price-row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+.edm-price { font-size: 14px; font-weight: 700; color: #E40026; }
+.edm-price-orig { font-size: 11px; color: var(--muted); text-decoration: line-through; }
+.edm-dots { display: flex; gap: 4px; margin-bottom: 8px; flex-wrap: wrap; }
+.edm-dot {
+  width: 13px; height: 13px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,.18);
+  flex-shrink: 0;
+}
+.edm-link-btn {
+  display: block; text-align: center;
+  font-size: 10.5px; font-weight: 700; letter-spacing: .06em;
+  padding: 6px 8px;
+  border: 1.5px solid var(--ink);
+  border-radius: 4px;
+  color: var(--ink);
+  text-decoration: none;
   transition: var(--trans);
+  background: transparent;
 }
-.outfit-figure:hover { transform: scale(1.05); }
-.outfit-label-badge {
-  position: absolute;
-  top: 14px; right: 14px;
-  background: var(--ink);
-  color: #fff;
-  font-size: 11px;
-  padding: 4px 12px;
-  border-radius: 999px;
-  letter-spacing: .08em;
-}
-[data-theme="dark"] .outfit-label-badge { background: var(--accent); color: #1a1612; }
+.edm-link-btn:hover { background: var(--ink); color: #fff; }
+[data-theme="dark"] .edm-link-btn { border-color: var(--accent); color: var(--accent); }
+[data-theme="dark"] .edm-link-btn:hover { background: var(--accent); color: #1a1612; }
 
 /* ── Outfit Items Grid ── */
 .outfit-grid {
@@ -780,11 +847,20 @@ textarea { resize: vertical; min-height: 72px; }
   <!-- ══ CENTER ══ -->
   <main class="col-center">
 
-    <!-- Outfit Hero -->
+    <!-- Outfit Hero / eDM -->
     <div class="card">
-      <div class="outfit-hero" id="outfitHero">
-        <div class="outfit-label-badge" id="styleLabel">法式優雅</div>
-        <div class="outfit-figure" id="outfitFigure">👗</div>
+      <div class="edm-wrap">
+        <div class="edm-header">
+          <div class="edm-brand-line">
+            <span class="edm-logo-uniqlo">UNIQLO</span>
+            <span class="edm-x">×</span>
+            <span class="edm-logo-gu">GU</span>
+            <span class="edm-x">·</span>
+            <span class="edm-style-name" id="edmStyleName">法式優雅</span>
+          </div>
+          <span class="edm-season" id="edmSeason">2025 Spring / Summer</span>
+        </div>
+        <div class="edm-grid" id="edmGrid"><!-- JS --></div>
       </div>
 
       <!-- Style Headline -->
@@ -1389,6 +1465,118 @@ function bindEvents() {
 }
 
 // ═══════════════════════════════════════════
+//  PRODUCT DATABASE (UNIQLO × GU)
+// ═══════════════════════════════════════════
+const SEASON = '2025 Spring / Summer';
+const UQ = 'https://www.uniqlo.com/tw/zh_TW/search?q=';
+const GU = 'https://www.gu-global.com/tw/zh_TW/search?q=';
+
+// bg: CSS gradient string for the product card image area
+const PRODUCTS = {
+  elegant: [
+    { brand:'U', name:'府綢方領衫', sub:'100% 棉 · 7色', price:'NT$890', dots:['#f5efe0','#2e2820','#c9a96e','#b0b8c1','#7d9b76'], tag:'熱銷', bg:'linear-gradient(160deg,#f9f5ed,#e8ddd0)', icon:'👔', url: UQ+'府綢方領衫' },
+    { brand:'U', name:'高腰直筒褲', sub:'柔軟彈性 · 標準版', price:'NT$990', dots:['#2e2820','#8b7355','#c4c4c4','#1a3a2a'], tag:'', bg:'linear-gradient(160deg,#e8e0d4,#d4c8b8)', icon:'👖', url: UQ+'高腰直筒褲' },
+    { brand:'U', name:'針織V領毛衣', sub:'棉混紡 · 輕盈保暖', price:'NT$990', dots:['#f5efe0','#c9a96e','#2e2820','#d4877a'], tag:'新品', bg:'linear-gradient(160deg,#fdf6ee,#eddfc8)', icon:'🧶', url: UQ+'針織V領毛衣' },
+    { brand:'G', name:'A字長裙', sub:'垂墜感面料 · 5色', price:'NT$590', dots:['#2e2820','#c4a882','#f5efe0','#8b4560'], tag:'', bg:'linear-gradient(160deg,#f0ebe2,#ddd5c8)', icon:'👗', url: GU+'A字長裙' },
+  ],
+  casual: [
+    { brand:'U', name:'優質棉圓領T恤', sub:'100%棉 · 22色', price:'NT$490', dots:['#ffffff','#2e2820','#6b8cae','#c4c4c4','#e8c97a'], tag:'暢銷', bg:'linear-gradient(160deg,#f0f4f8,#dde8f0)', icon:'👕', url: UQ+'優質棉圓領T恤' },
+    { brand:'U', name:'輕型羽絨外套', sub:'附收納袋 · 可機洗', price:'NT$1,990', dots:['#2e2820','#6b8cae','#c4c4c4','#8b6f47'], tag:'', bg:'linear-gradient(160deg,#e8ecf0,#d4dce8)', icon:'🧥', url: UQ+'輕型羽絨外套' },
+    { brand:'G', name:'闊腿牛仔褲', sub:'高腰設計 · 4色', price:'NT$590', dots:['#6b8cae','#2e2820','#c4c4c4'], tag:'新品', bg:'linear-gradient(160deg,#dde4ee,#c8d4e4)', icon:'👖', url: GU+'闊腿牛仔褲' },
+    { brand:'G', name:'帆布托特包', sub:'大容量 · 3色', price:'NT$390', dots:['#f5efe0','#2e2820','#6b8cae'], tag:'', bg:'linear-gradient(160deg,#f5f0e8,#e4ddd4)', icon:'🛍️', url: GU+'帆布托特包' },
+  ],
+  office: [
+    { brand:'U', name:'感動褲 標準版', sub:'防皺彈性 · 8色', price:'NT$990', dots:['#2e2820','#1a3a2a','#4a6741','#8b7355','#c4c4c4'], tag:'熱銷', bg:'linear-gradient(160deg,#e4e8e4,#d0d8d0)', icon:'👖', url: UQ+'感動褲' },
+    { brand:'U', name:'棉質西裝外套', sub:'修身版型 · 可水洗', price:'NT$1,990', dots:['#2e2820','#4a6741','#8b7355','#1a1a2e'], tag:'新品', bg:'linear-gradient(160deg,#e0e4e0,#ccd4cc)', icon:'🧥', url: UQ+'棉質西裝外套' },
+    { brand:'U', name:'府綢細條紋衬衫', sub:'防皺處理 · 5色', price:'NT$890', dots:['#ffffff','#6b8cae','#2e2820','#c9a96e'], tag:'', bg:'linear-gradient(160deg,#eef2f8,#dde4f0)', icon:'👔', url: UQ+'府綢衬衫' },
+    { brand:'G', name:'短版V領開衫', sub:'輕薄針織 · 6色', price:'NT$490', dots:['#2e2820','#f5efe0','#c9a96e','#8b4560'], tag:'', bg:'linear-gradient(160deg,#f0ece4,#e0d8cc)', icon:'🧶', url: GU+'開衫' },
+  ],
+  date: [
+    { brand:'U', name:'府綢荷葉領上衣', sub:'垂墜感 · 4色', price:'NT$890', dots:['#f9e0e0','#ffffff','#c9a96e','#2e2820'], tag:'新品', bg:'linear-gradient(160deg,#fde8e8,#f4d8dc)', icon:'🌸', url: UQ+'府綢荷葉領' },
+    { brand:'U', name:'棉質蕾絲罩衫', sub:'透膚設計 · 3色', price:'NT$790', dots:['#ffffff','#f9e0e0','#2e2820'], tag:'', bg:'linear-gradient(160deg,#fdf0f4,#f4e0e8)', icon:'👗', url: UQ+'蕾絲罩衫' },
+    { brand:'G', name:'花卉印花洋裝', sub:'A字剪裁 · 2色', price:'NT$790', dots:['#f9e0e0','#ffffff','#c47a8a'], tag:'熱銷', bg:'linear-gradient(160deg,#fce4ec,#f8d0dc)', icon:'💃', url: GU+'花卉印花洋裝' },
+    { brand:'G', name:'迷你鏈條包', sub:'人造皮革 · 5色', price:'NT$590', dots:['#2e2820','#c47a8a','#c9a96e','#ffffff','#8b4560'], tag:'', bg:'linear-gradient(160deg,#f4e0e8,#e8d0d8)', icon:'👜', url: GU+'鏈條包' },
+  ],
+  street: [
+    { brand:'U', name:'寬版版印花T恤', sub:'厚磅棉 · 多款', price:'NT$590', dots:['#000000','#ffffff','#ff3c3c','#ffd700'], tag:'', bg:'linear-gradient(160deg,#2e2820,#1a1a1a)', icon:'👕', url: UQ+'印花T恤' },
+    { brand:'U', name:'輕便風衣外套', sub:'防潑水 · 4色', price:'NT$1,490', dots:['#2e2820','#c4c4c4','#ffffff','#ff3c3c'], tag:'新品', bg:'linear-gradient(160deg,#3a3a3a,#2a2a2a)', icon:'🧥', url: UQ+'風衣外套' },
+    { brand:'G', name:'Cargo 長褲', sub:'多口袋設計 · 4色', price:'NT$790', dots:['#2e2820','#8b7355','#3d5a3e','#c4c4c4'], tag:'熱銷', bg:'linear-gradient(160deg,#3d4030,#2e3020)', icon:'👖', url: GU+'Cargo長褲' },
+    { brand:'G', name:'厚底運動拖鞋', sub:'EVA鞋底 · 5色', price:'NT$490', dots:['#000000','#ffffff','#ff3c3c','#ffd700','#6b8cae'], tag:'', bg:'linear-gradient(160deg,#2a2a2e,#1a1a22)', icon:'👟', url: GU+'厚底拖鞋' },
+  ],
+  resort: [
+    { brand:'U', name:'棉麻混紡開衫', sub:'透氣涼感 · 5色', price:'NT$990', dots:['#87ceeb','#f5deb3','#ffffff','#228b22','#ff9060'], tag:'', bg:'linear-gradient(160deg,#e8f4f8,#d0ecf4)', icon:'🌊', url: UQ+'棉麻開衫' },
+    { brand:'U', name:'AIRism 吊帶背心', sub:'涼感速乾 · 10色', price:'NT$490', dots:['#ffffff','#87ceeb','#f5deb3','#ff9060','#c47a8a'], tag:'暢銷', bg:'linear-gradient(160deg,#d4eef8,#c0e4f0)', icon:'🩱', url: UQ+'AIRism背心' },
+    { brand:'G', name:'印花寬版短褲', sub:'棉麻混紡 · 3款', price:'NT$490', dots:['#87ceeb','#f5deb3','#228b22'], tag:'新品', bg:'linear-gradient(160deg,#e0f0e8,#c8e4d4)', icon:'🩳', url: GU+'印花短褲' },
+    { brand:'G', name:'草編托特包', sub:'天然材質 · 2色', price:'NT$590', dots:['#c8a876','#f5deb3'], tag:'', bg:'linear-gradient(160deg,#f5ecd8,#e8dcc8)', icon:'🧺', url: GU+'草編包' },
+  ],
+  athleisure: [
+    { brand:'U', name:'AIRism 運動背心', sub:'涼感抗菌 · 8色', price:'NT$490', dots:['#000000','#ffffff','#00c4cc','#ff6b6b','#c4c4c4'], tag:'熱銷', bg:'linear-gradient(160deg,#e4f0f4,#cce4ec)', icon:'🩱', url: UQ+'AIRism運動背心' },
+    { brand:'U', name:'DRY-EX 運動短褲', sub:'快乾彈性 · 6色', price:'NT$590', dots:['#000000','#ffffff','#00c4cc','#ff6b6b'], tag:'', bg:'linear-gradient(160deg,#e0eef4,#cce0ec)', icon:'🩳', url: UQ+'運動短褲' },
+    { brand:'U', name:'輕薄防風外套', sub:'可收納 · 5色', price:'NT$1,290', dots:['#2e2820','#ffffff','#00c4cc','#c4c4c4'], tag:'新品', bg:'linear-gradient(160deg,#dce8f0,#c8d8e8)', icon:'🧥', url: UQ+'防風外套' },
+    { brand:'G', name:'高腰瑜伽褲', sub:'四向彈力 · 5色', price:'NT$590', dots:['#000000','#c4c4c4','#8b4560','#00c4cc'], tag:'', bg:'linear-gradient(160deg,#2a2a2e,#1e1e26)', icon:'🧘', url: GU+'瑜伽褲' },
+  ],
+  dark: [
+    { brand:'U', name:'府綢黑色衬衫', sub:'垂墜感 · 修身版', price:'NT$890', dots:['#000000','#1a1a2e','#6b0f1a'], tag:'', bg:'linear-gradient(160deg,#1a1a1a,#0d0d0d)', icon:'🖤', url: UQ+'黑色衬衫' },
+    { brand:'U', name:'輕型羽絨外套', sub:'黑色限定 · 啞光', price:'NT$1,990', dots:['#000000','#1a1a2e'], tag:'限定', bg:'linear-gradient(160deg,#1e1e24,#12121a)', icon:'🧥', url: UQ+'黑色羽絨外套' },
+    { brand:'G', name:'緊身踝靴長褲', sub:'彈力合身 · 3色', price:'NT$590', dots:['#000000','#1a1a2e','#5c2d91'], tag:'熱銷', bg:'linear-gradient(160deg,#1a1a22,#0e0e18)', icon:'👖', url: GU+'踝靴長褲' },
+    { brand:'G', name:'皮革感腰帶包', sub:'磁扣設計 · 4色', price:'NT$490', dots:['#000000','#1a1a2e','#5c2d91','#c0c0c0'], tag:'新品', bg:'linear-gradient(160deg,#1e1a22,#14121a)', icon:'👜', url: GU+'腰帶包' },
+  ],
+  korean: [
+    { brand:'U', name:'短版圓領針織衫', sub:'棉混紡 · 12色', price:'NT$790', dots:['#f9e0e0','#ffd1dc','#c8e6c9','#e8d5b0','#ffffff'], tag:'熱銷', bg:'linear-gradient(160deg,#fce4ec,#f8d4e4)', icon:'🎀', url: UQ+'短版針織衫' },
+    { brand:'U', name:'府綢細褶裙', sub:'A字版型 · 5色', price:'NT$890', dots:['#f9e0e0','#2e2820','#c8e6c9','#ffd1dc'], tag:'新品', bg:'linear-gradient(160deg,#fde8f0,#f4dce8)', icon:'👗', url: UQ+'府綢細褶裙' },
+    { brand:'G', name:'格紋百褶裙', sub:'迷你版型 · 4色', price:'NT$390', dots:['#f9e0e0','#2e2820','#6b8cae','#c9a96e'], tag:'熱銷', bg:'linear-gradient(160deg,#fce0e8,#f4d4e0)', icon:'🩷', url: GU+'格紋百褶裙' },
+    { brand:'G', name:'瑪莉珍厚底鞋', sub:'內增高3cm · 3色', price:'NT$690', dots:['#2e2820','#ffffff','#f9e0e0'], tag:'', bg:'linear-gradient(160deg,#f0e4ec,#e4d4e4)', icon:'👞', url: GU+'瑪莉珍鞋' },
+  ],
+  vintage: [
+    { brand:'U', name:'法蘭絨格紋衬衫', sub:'有機棉 · 4色', price:'NT$990', dots:['#c4a882','#8b6f47','#5c4033','#3d5a3e'], tag:'', bg:'linear-gradient(160deg,#e8dcc8,#d8cbb8)', icon:'🎭', url: UQ+'法蘭絨格紋衬衫' },
+    { brand:'U', name:'燈芯絨直筒褲', sub:'修身版型 · 4色', price:'NT$1,290', dots:['#5c4033','#8b6f47','#2e2820','#3d5a3e'], tag:'新品', bg:'linear-gradient(160deg,#d8ccc0,#c8bab0)', icon:'👖', url: UQ+'燈芯絨褲' },
+    { brand:'G', name:'復古格紋A字裙', sub:'中長版 · 3款', price:'NT$490', dots:['#c4a882','#5c4033','#3d5a3e','#8b6f47'], tag:'', bg:'linear-gradient(160deg,#e4d8c8,#d4c4b0)', icon:'👗', url: GU+'格紋A字裙' },
+    { brand:'G', name:'復古厚底樂福鞋', sub:'仿麂皮 · 2色', price:'NT$790', dots:['#2e2820','#8b6f47'], tag:'熱銷', bg:'linear-gradient(160deg,#d8ccbc,#c8bca8)', icon:'👟', url: GU+'樂福鞋' },
+  ],
+};
+
+// ═══════════════════════════════════════════
+//  RENDER eDM
+// ═══════════════════════════════════════════
+function renderEDM(styleKey) {
+  document.getElementById('edmStyleName').textContent = STYLES[styleKey].label;
+  document.getElementById('edmSeason').textContent = SEASON;
+  const products = PRODUCTS[styleKey] || [];
+  const grid = document.getElementById('edmGrid');
+  grid.innerHTML = products.map((p, i) => {
+    const isLight = isDarkBg(p.bg);
+    const txtColor = isLight ? '#fff' : '#2e2820';
+    return `
+      <a class="edm-card anim" href="${p.url}" target="_blank" rel="noopener" style="animation-delay:${i * .07}s" title="${p.name} — 點擊至官網查看">
+        <div class="edm-card-img" style="background:${p.bg};">
+          <div class="edm-badge-wrap">
+            <span class="edm-brand-badge ${p.brand === 'U' ? 'badge-u' : 'badge-g'}">${p.brand === 'U' ? 'UNIQLO' : 'GU'}</span>
+            ${p.tag ? `<span class="edm-tag-badge">${p.tag}</span>` : ''}
+          </div>
+          <span style="filter:drop-shadow(0 3px 6px rgba(0,0,0,.18));font-size:52px;">${p.icon}</span>
+        </div>
+        <div class="edm-info">
+          <div class="edm-name">${p.name}</div>
+          <div class="edm-sub">${p.sub}</div>
+          <div class="edm-price-row">
+            <span class="edm-price">${p.price}</span>
+            ${p.orig ? `<span class="edm-price-orig">${p.orig}</span>` : ''}
+          </div>
+          <div class="edm-dots">
+            ${p.dots.map(c => `<div class="edm-dot" style="background:${c}" title="${c}"></div>`).join('')}
+          </div>
+          <div class="edm-link-btn">查看商品 →</div>
+        </div>
+      </a>`;
+  }).join('');
+}
+
+function isDarkBg(bgStr) {
+  // rough check: if gradient contains dark hex values
+  return /#[0-1][0-9a-f]{5}|#2[0-9a][0-9a-f]{4}|#000|#1a|#0d/i.test(bgStr);
+}
+
+// ═══════════════════════════════════════════
 //  RENDER ALL
 // ═══════════════════════════════════════════
 function renderAll(animate = false) {
@@ -1396,9 +1584,8 @@ function renderAll(animate = false) {
   if (!data) return;
   const adjusted = adjustByWeather(data);
 
-  // Figure / label
-  document.getElementById('outfitFigure').textContent = data.figure;
-  document.getElementById('styleLabel').textContent = data.label;
+  // eDM product catalog
+  renderEDM(state.style);
   document.getElementById('lookTitle').textContent = data.title;
 
   // Advice
@@ -1430,8 +1617,10 @@ function renderAll(animate = false) {
       void el.offsetWidth;
       el.style.animation = 'fadeSlide .4s ease forwards';
     });
-    document.getElementById('outfitFigure').classList.add('pulse');
-    setTimeout(() => document.getElementById('outfitFigure').classList.remove('pulse'), 2000);
+    document.querySelectorAll('.edm-card').forEach(el => {
+      el.style.animation = 'none'; void el.offsetWidth;
+      el.style.animation = 'fadeSlide .4s ease forwards';
+    });
   }
 }
 
