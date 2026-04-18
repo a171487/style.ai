@@ -273,112 +273,132 @@ textarea { resize: vertical; min-height: 72px; }
 .btn-block { width: 100%; }
 
 /* ── eDM Catalog ── */
-.edm-wrap { margin-bottom: 20px; }
+.edm-wrap { margin-bottom: 20px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
+
+/* Budget vibe banner */
+.edm-vibe {
+  padding: 12px 20px;
+  display: flex; align-items: center; gap: 12px;
+  transition: background .4s, color .4s;
+}
+.edm-vibe-badge {
+  font-size: 11px; font-weight: 800; letter-spacing: .12em;
+  padding: 3px 10px; border-radius: 3px;
+  white-space: nowrap; flex-shrink: 0;
+}
+.edm-vibe-text { font-size: 12px; letter-spacing: .05em; }
+.edm-vibe-mood { font-size: 11.5px; opacity: .8; margin-left: auto; text-align: right; max-width: 240px; line-height: 1.4; }
+
+/* vibe themes */
+.edm-wrap[data-budget="low"] .edm-vibe { background: linear-gradient(135deg,#fff3e0,#ffe0b2); color: #bf360c; }
+.edm-wrap[data-budget="low"] .edm-vibe-badge { background:#ff6d00; color:#fff; }
+.edm-wrap[data-budget="mid"] .edm-vibe { background: linear-gradient(135deg,#f8f6f2,#eeece8); color: #2e2820; }
+.edm-wrap[data-budget="mid"] .edm-vibe-badge { background:#2e2820; color:#fff; }
+.edm-wrap[data-budget="high"] .edm-vibe { background: linear-gradient(135deg,#1a1612,#2d2820); color: #c9a96e; }
+.edm-wrap[data-budget="high"] .edm-vibe-badge { background:#c9a96e; color:#1a1612; }
+.edm-wrap[data-budget="high"] .edm-vibe-text { color: #e8d5b0; }
+.edm-wrap[data-budget="high"] .edm-vibe-mood { color: #c9a96e; opacity: 1; }
+
+/* header row */
 .edm-header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  padding-bottom: 12px;
-  border-bottom: 2px solid var(--ink);
-  margin-bottom: 14px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 20px 10px;
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
 }
-.edm-brand-line { display: flex; align-items: center; gap: 10px; }
-.edm-logo-uniqlo {
-  font-size: 15px; font-weight: 900; letter-spacing: .12em;
-  color: #fff; background: #E40026;
-  padding: 3px 10px 3px 9px;
-  border-radius: 3px;
-  line-height: 1.6;
-}
-.edm-logo-gu {
-  font-size: 15px; font-weight: 900; letter-spacing: .12em;
-  color: #fff; background: #000;
-  padding: 3px 10px;
-  border-radius: 3px;
-  line-height: 1.6;
-}
-.edm-x { font-size: 13px; color: var(--muted); }
-.edm-style-name {
-  font-family: "Playfair Display", serif;
-  font-size: 17px; font-weight: 600;
-  color: var(--ink);
-}
-.edm-season {
-  font-size: 11px; color: var(--muted);
-  letter-spacing: .15em; text-transform: uppercase;
-}
-.edm-grid {
+.edm-wrap[data-budget="high"] .edm-header { background: #1e1a16; border-color: #3a3428; }
+.edm-brand-line { display: flex; align-items: center; gap: 8px; }
+.edm-logo-uniqlo { font-size: 13px; font-weight: 900; letter-spacing:.12em; color:#fff; background:#E40026; padding:2px 8px; border-radius:2px; }
+.edm-logo-gu { font-size: 13px; font-weight: 900; letter-spacing:.12em; color:#fff; background:#000; padding:2px 8px; border-radius:2px; }
+.edm-x { font-size: 11px; color: var(--muted); }
+.edm-style-name { font-family:"Playfair Display",serif; font-size:15px; font-weight:600; color:var(--ink); }
+.edm-wrap[data-budget="high"] .edm-style-name { color:#c9a96e; }
+.edm-season { font-size:10px; color:var(--muted); letter-spacing:.15em; text-transform:uppercase; }
+.edm-wrap[data-budget="high"] .edm-season { color:#7a6e60; }
+
+/* main content: figure + grid */
+.edm-body {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+  grid-template-columns: 160px 1fr;
+  background: var(--card);
 }
-@media (max-width: 900px) { .edm-grid { grid-template-columns: repeat(2, 1fr); } }
-.edm-card {
-  background: #fff;
-  border: 1px solid #e8e0d8;
-  border-radius: 10px;
-  overflow: hidden;
-  transition: var(--trans);
-  cursor: pointer;
-  text-decoration: none;
-  display: block;
-  color: inherit;
-}
-[data-theme="dark"] .edm-card { background: var(--surface); border-color: var(--border); }
-.edm-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,.12); }
-.edm-card-img {
-  aspect-ratio: 3/4;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 56px;
+.edm-wrap[data-budget="high"] .edm-body { background: #1e1a16; }
+
+/* woman figure column */
+.edm-figure-col {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: flex-end;
+  padding: 12px 8px 0;
+  border-right: 1px solid var(--border);
   position: relative;
   overflow: hidden;
 }
-.edm-badge-wrap {
-  position: absolute; top: 8px; left: 8px;
-  display: flex; flex-direction: column; gap: 4px;
+.edm-wrap[data-budget="high"] .edm-figure-col { border-color: #3a3428; }
+.edm-figure-label {
+  font-size: 9px; letter-spacing:.2em; text-transform:uppercase;
+  color: var(--muted); margin-bottom: 6px;
 }
-.edm-brand-badge {
-  font-size: 9px; font-weight: 900; letter-spacing: .1em;
-  padding: 2px 7px; border-radius: 2px; line-height: 1.6;
+.edm-wrap[data-budget="high"] .edm-figure-label { color:#7a6e60; }
+
+/* product grid */
+.edm-grid-col { padding: 12px; }
+.edm-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
 }
+
+/* product card */
+.edm-card {
+  background: var(--surface);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: var(--trans);
+  text-decoration: none;
+  display: block;
+  color: inherit;
+  border: 1.5px solid var(--border);
+}
+.edm-wrap[data-budget="low"] .edm-card { border-color: #ffcc80; background:#fffde7; }
+.edm-wrap[data-budget="mid"] .edm-card { border-color: #e4ddd2; background:#ffffff; }
+.edm-wrap[data-budget="high"] .edm-card { border-color: #3a3428; background:#252018; }
+.edm-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(0,0,0,.14); }
+
+.edm-card-img {
+  aspect-ratio: 2/3;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.edm-badge-wrap { position: absolute; top: 6px; left: 6px; display: flex; flex-direction: column; gap: 3px; }
+.edm-brand-badge { font-size: 8px; font-weight: 900; letter-spacing:.1em; padding:2px 6px; border-radius:2px; line-height:1.6; }
 .badge-u { background: #E40026; color: #fff; }
 .badge-g { background: #000; color: #fff; }
-.edm-tag-badge {
-  font-size: 9px; font-weight: 700; letter-spacing: .05em;
-  padding: 2px 6px; border-radius: 2px; line-height: 1.6;
-  background: #fff; color: #E40026; border: 1px solid #E40026;
-  align-self: flex-start;
-}
-.edm-info { padding: 9px 11px 11px; }
-.edm-name {
-  font-size: 11.5px; font-weight: 600; color: var(--ink);
-  line-height: 1.45; margin-bottom: 2px;
-}
-.edm-sub { font-size: 10px; color: var(--muted); margin-bottom: 5px; }
-.edm-price-row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
-.edm-price { font-size: 14px; font-weight: 700; color: #E40026; }
-.edm-price-orig { font-size: 11px; color: var(--muted); text-decoration: line-through; }
-.edm-dots { display: flex; gap: 4px; margin-bottom: 8px; flex-wrap: wrap; }
-.edm-dot {
-  width: 13px; height: 13px;
-  border-radius: 50%;
-  border: 1px solid rgba(0,0,0,.18);
-  flex-shrink: 0;
-}
+.edm-tag-badge { font-size:8px; font-weight:700; padding:2px 5px; border-radius:2px; line-height:1.6; background:#fff; color:#E40026; border:1px solid #E40026; align-self:flex-start; }
+.edm-wrap[data-budget="high"] .edm-tag-badge { background:#c9a96e; color:#1a1612; border-color:#c9a96e; }
+
+.edm-info { padding: 8px 10px 10px; }
+.edm-name { font-size:11px; font-weight:600; color:var(--ink); line-height:1.4; margin-bottom:2px; }
+.edm-wrap[data-budget="high"] .edm-name { color:#e8d5b0; }
+.edm-sub { font-size:9.5px; color:var(--muted); margin-bottom:4px; }
+.edm-wrap[data-budget="high"] .edm-sub { color:#7a6e60; }
+.edm-price { font-size:13px; font-weight:800; margin-bottom:5px; }
+.edm-wrap[data-budget="low"]  .edm-price { color:#e65100; }
+.edm-wrap[data-budget="mid"]  .edm-price { color:#E40026; }
+.edm-wrap[data-budget="high"] .edm-price { color:#c9a96e; }
+.edm-dots { display:flex; gap:4px; margin-bottom:7px; flex-wrap:wrap; }
+.edm-dot { width:12px; height:12px; border-radius:50%; border:1px solid rgba(0,0,0,.18); flex-shrink:0; }
+.edm-wrap[data-budget="high"] .edm-dot { border-color:rgba(255,255,255,.2); }
 .edm-link-btn {
-  display: block; text-align: center;
-  font-size: 10.5px; font-weight: 700; letter-spacing: .06em;
-  padding: 6px 8px;
-  border: 1.5px solid var(--ink);
-  border-radius: 4px;
-  color: var(--ink);
-  text-decoration: none;
-  transition: var(--trans);
-  background: transparent;
+  display:block; text-align:center; font-size:10px; font-weight:700;
+  letter-spacing:.06em; padding:5px 8px; border-radius:3px;
+  text-decoration:none; transition:var(--trans);
 }
-.edm-link-btn:hover { background: var(--ink); color: #fff; }
-[data-theme="dark"] .edm-link-btn { border-color: var(--accent); color: var(--accent); }
-[data-theme="dark"] .edm-link-btn:hover { background: var(--accent); color: #1a1612; }
+.edm-wrap[data-budget="low"]  .edm-link-btn { border:1.5px solid #ff6d00; color:#ff6d00; }
+.edm-wrap[data-budget="low"]  .edm-link-btn:hover { background:#ff6d00; color:#fff; }
+.edm-wrap[data-budget="mid"]  .edm-link-btn { border:1.5px solid #2e2820; color:#2e2820; }
+.edm-wrap[data-budget="mid"]  .edm-link-btn:hover { background:#2e2820; color:#fff; }
+.edm-wrap[data-budget="high"] .edm-link-btn { border:1.5px solid #c9a96e; color:#c9a96e; }
+.edm-wrap[data-budget="high"] .edm-link-btn:hover { background:#c9a96e; color:#1a1612; }
 
 /* ── Outfit Items Grid ── */
 .outfit-grid {
@@ -849,7 +869,14 @@ textarea { resize: vertical; min-height: 72px; }
 
     <!-- Outfit Hero / eDM -->
     <div class="card">
-      <div class="edm-wrap">
+      <div class="edm-wrap" data-budget="mid">
+        <!-- Budget vibe banner -->
+        <div class="edm-vibe" id="edmVibe">
+          <span class="edm-vibe-badge" id="edmVibeBadge">中價位</span>
+          <span class="edm-vibe-text" id="edmVibeText">品質 × 風格 · 日常最佳選擇</span>
+          <span class="edm-vibe-mood" id="edmVibeMood">精心選品的品味感</span>
+        </div>
+        <!-- Brand header -->
         <div class="edm-header">
           <div class="edm-brand-line">
             <span class="edm-logo-uniqlo">UNIQLO</span>
@@ -860,7 +887,16 @@ textarea { resize: vertical; min-height: 72px; }
           </div>
           <span class="edm-season" id="edmSeason">2025 Spring / Summer</span>
         </div>
-        <div class="edm-grid" id="edmGrid"><!-- JS --></div>
+        <!-- Body: figure + products -->
+        <div class="edm-body">
+          <div class="edm-figure-col">
+            <div class="edm-figure-label">Today's Model</div>
+            <div id="womanFigure"></div>
+          </div>
+          <div class="edm-grid-col">
+            <div class="edm-grid" id="edmGrid"><!-- JS --></div>
+          </div>
+        </div>
       </div>
 
       <!-- Style Headline -->
@@ -1600,51 +1636,180 @@ const PRODUCTS = {
 };
 
 // ═══════════════════════════════════════════
-//  RENDER eDM
+//  BUDGET VIBE CONFIG
 // ═══════════════════════════════════════════
 const BUDGET_KEY = { '平價': 'low', '中價位': 'mid', '精品感': 'high' };
 
+const BUDGET_VIBE = {
+  low: {
+    badge: '平價首選',
+    text: 'CP 值爆表 · 穿搭不需要貴',
+    mood: '用最划算的價格穿出風格，才是真正的時尚智慧',
+    cardImgFilter: 'saturate(1.2) brightness(1.05)',
+  },
+  mid: {
+    badge: '品質精選',
+    text: '品質 × 風格 · 日常最佳投資',
+    mood: 'Uniqlo 主力款，兼顧設計感與耐穿度',
+    cardImgFilter: 'saturate(1.0) brightness(1.0)',
+  },
+  high: {
+    badge: '質感嚴選',
+    text: '少而精 · 高質感的穿衣哲學',
+    mood: '選擇更好的材質，讓每一件都成為長久的投資',
+    cardImgFilter: 'saturate(0.85) brightness(0.9) contrast(1.1)',
+  },
+};
+
+// ═══════════════════════════════════════════
+//  WOMAN FIGURE SVG
+// ═══════════════════════════════════════════
+function womanFigureSvg(palette, budget) {
+  const [p1, p2, p3] = palette;
+  const skin = '#f2d4be';
+  const hair = '#2e2210';
+  const goldAcc = budget === 'high' ? '#c9a96e' : (budget === 'low' ? '#ff9800' : '#8b7355');
+
+  return `<svg viewBox="0 0 140 370" xmlns="http://www.w3.org/2000/svg" style="width:130px;height:340px;display:block;">
+  <!-- Hair back -->
+  <ellipse cx="70" cy="38" rx="30" ry="36" fill="${hair}"/>
+  <path d="M44 50 Q36 90 38 130 Q42 115 46 95 Z" fill="${hair}"/>
+  <path d="M96 50 Q104 90 102 130 Q98 115 94 95 Z" fill="${hair}"/>
+  <!-- Neck -->
+  <rect x="63" y="76" width="14" height="20" rx="5" fill="${skin}"/>
+  <!-- Shoulders -->
+  <path d="M44 90 Q70 82 96 90 L100 100 Q70 92 40 100 Z" fill="${p1 || '#c9a96e'}"/>
+  <!-- Top -->
+  <path d="M40 100 L100 100 L104 168 L36 168 Z" fill="${p1 || '#c9a96e'}"/>
+  <!-- Collar / neckline detail -->
+  <path d="M58 90 Q70 102 82 90" fill="none" stroke="${p2 || '#fff'}" stroke-width="1.5" opacity="0.7"/>
+  <!-- Left arm -->
+  <path d="M40 102 L22 162 Q20 166 25 167 L30 167 L48 110 Z" fill="${skin}"/>
+  <!-- Right arm -->
+  <path d="M100 102 L118 162 Q120 166 115 167 L110 167 L92 110 Z" fill="${skin}"/>
+  <!-- Left hand -->
+  <ellipse cx="24" cy="169" rx="5.5" ry="7" fill="${skin}"/>
+  <!-- Right hand -->
+  <ellipse cx="116" cy="169" rx="5.5" ry="7" fill="${skin}"/>
+  <!-- Waist belt -->
+  <rect x="36" y="164" width="68" height="8" rx="4" fill="${p3 || p2 || '#8b7355'}"/>
+  <!-- Skirt / bottom -->
+  <path d="M36 172 L104 172 L114 330 L26 330 Z" fill="${p2 || '#8b7355'}"/>
+  <!-- Skirt pleat lines -->
+  <line x1="70" y1="172" x2="70" y2="330" stroke="${p1 || '#c9a96e'}" stroke-width="1" opacity="0.25"/>
+  <line x1="50" y1="172" x2="42" y2="330" stroke="${p1 || '#c9a96e'}" stroke-width="0.8" opacity="0.18"/>
+  <line x1="90" y1="172" x2="98" y2="330" stroke="${p1 || '#c9a96e'}" stroke-width="0.8" opacity="0.18"/>
+  <!-- Legs -->
+  <rect x="40" y="328" width="20" height="36" rx="6" fill="${skin}"/>
+  <rect x="80" y="328" width="20" height="36" rx="6" fill="${skin}"/>
+  <!-- Shoes -->
+  <path d="M36 360 L60 360 Q65 366 60 369 L34 369 Q30 366 36 360Z" fill="${hair}"/>
+  <path d="M80 360 L104 360 Q109 366 104 369 L78 369 Q74 366 80 360Z" fill="${hair}"/>
+  <!-- Heel detail -->
+  <rect x="57" y="365" width="4" height="8" rx="1" fill="${hair}"/>
+  <rect x="97" y="365" width="4" height="8" rx="1" fill="${hair}"/>
+  <!-- Face -->
+  <ellipse cx="70" cy="54" rx="22" ry="25" fill="${skin}"/>
+  <!-- Left ear -->
+  <ellipse cx="49" cy="56" rx="4.5" ry="6" fill="${skin}"/>
+  <!-- Right ear -->
+  <ellipse cx="91" cy="56" rx="4.5" ry="6" fill="${skin}"/>
+  <!-- Hair front -->
+  <path d="M50 30 Q70 16 90 30 Q92 18 90 38 Q82 24 70 22 Q58 24 50 38 Q48 18 50 30Z" fill="${hair}"/>
+  <!-- Eyebrows -->
+  <path d="M60 46 Q66 43 72 44" stroke="${hair}" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+  <path d="M68 44 Q74 43 80 46" stroke="${hair}" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+  <!-- Eyes white -->
+  <ellipse cx="63" cy="52" rx="4.5" ry="4" fill="white"/>
+  <ellipse cx="77" cy="52" rx="4.5" ry="4" fill="white"/>
+  <!-- Iris -->
+  <ellipse cx="63" cy="53" rx="2.8" ry="3.2" fill="#3a2e28"/>
+  <ellipse cx="77" cy="53" rx="2.8" ry="3.2" fill="#3a2e28"/>
+  <!-- Eye shine -->
+  <circle cx="64.2" cy="51.5" r="1" fill="white"/>
+  <circle cx="78.2" cy="51.5" r="1" fill="white"/>
+  <!-- Lashes upper -->
+  <path d="M58.5 49 Q63 47.5 67.5 49" stroke="${hair}" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <path d="M72.5 49 Q77 47.5 81.5 49" stroke="${hair}" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <!-- Nose -->
+  <path d="M68 62 Q70 65 72 62" stroke="#d4a090" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <!-- Lips -->
+  <path d="M63 70 Q70 74.5 77 70" fill="#c47a8a"/>
+  <path d="M63 70 Q70 67 77 70" fill="#e8a0b0"/>
+  <path d="M64 70 L76 70" stroke="#b06070" stroke-width="0.5"/>
+  <!-- Blush -->
+  <ellipse cx="56" cy="63" rx="7" ry="4" fill="#f5a0a0" opacity="0.35"/>
+  <ellipse cx="84" cy="63" rx="7" ry="4" fill="#f5a0a0" opacity="0.35"/>
+  <!-- Earrings -->
+  <circle cx="49" cy="62" r="3.5" fill="${goldAcc}"/>
+  <circle cx="91" cy="62" r="3.5" fill="${goldAcc}"/>
+  <!-- Necklace -->
+  <path d="M58 96 Q70 105 82 96" stroke="${goldAcc}" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <circle cx="70" cy="106" r="2.5" fill="${goldAcc}"/>
+  <!-- Budget indicator: bag for high, tote for low -->
+  ${budget === 'high'
+    ? `<path d="M22 167 Q18 190 20 210 L34 210 Q36 190 30 167Z" fill="${p2||'#8b7355'}" opacity="0.9"/>
+       <path d="M25 167 Q22 162 27 160 Q32 158 33 167" stroke="${goldAcc}" stroke-width="1.2" fill="none"/>
+       <rect x="20" y="186" width="14" height="2" rx="1" fill="${goldAcc}" opacity="0.7"/>`
+    : budget === 'low'
+    ? `<path d="M22 167 Q16 185 18 210 L34 210 Q36 185 30 167Z" fill="#e8c97a" opacity="0.85"/>
+       <line x1="24" y1="167" x2="20" y2="155" stroke="#c4a04a" stroke-width="1.5"/>`
+    : `<path d="M22 167 Q18 188 20 208 L34 208 Q36 188 30 167Z" fill="${p3||p2||'#8b7355'}" opacity="0.85"/>`
+  }
+</svg>`;
+}
+
+// ═══════════════════════════════════════════
+//  RENDER eDM
+// ═══════════════════════════════════════════
 function renderEDM(styleKey) {
-  document.getElementById('edmStyleName').textContent = STYLES[styleKey].label;
+  const sData = STYLES[styleKey];
+  const budget = state.budget || 'mid';
+  const vibe = BUDGET_VIBE[budget];
+
+  // Set wrap data-budget for CSS theming
+  document.querySelector('.edm-wrap').dataset.budget = budget;
+
+  // Vibe banner
+  document.getElementById('edmVibeBadge').textContent = vibe.badge;
+  document.getElementById('edmVibeText').textContent = vibe.text;
+  document.getElementById('edmVibeMood').textContent = vibe.mood;
+
+  // Header
+  document.getElementById('edmStyleName').textContent = sData.label;
   document.getElementById('edmSeason').textContent = SEASON;
 
-  const budget = state.budget || 'mid';
+  // Woman figure
+  document.getElementById('womanFigure').innerHTML = womanFigureSvg(sData.palette, budget);
+
+  // Products
   const all = PRODUCTS[styleKey] || [];
-  const filtered = all.filter(p => p.budgets.includes(budget)).slice(0, 4);
+  const filtered = all.filter(p => p.budgets.includes(budget));
+  const shown = filtered.length >= 4 ? filtered.slice(0, 4)
+    : [...filtered, ...all.filter(p => p.budgets.includes('mid') && !filtered.includes(p))].slice(0, 4);
 
-  // If not enough items for this budget, fill with mid-budget items
-  if (filtered.length < 2) {
-    const fill = all.filter(p => p.budgets.includes('mid') && !filtered.includes(p));
-    filtered.push(...fill.slice(0, 4 - filtered.length));
-  }
-
-  const grid = document.getElementById('edmGrid');
-  grid.innerHTML = filtered.map((p, i) => {
+  const imgFilter = vibe.cardImgFilter;
+  document.getElementById('edmGrid').innerHTML = shown.map((p, i) => {
     const brandColor = p.brand === 'U' ? '#E40026' : '#000000';
-    const svgFn = SVG[p.type] || SVG.tshirt;
-    const svgHtml = svgFn(brandColor);
-    const searchUrl = (p.brand === 'U' ? UQ_BASE : GU_BASE) + encodeURIComponent(p.kw);
+    const svgHtml = (SVG[p.type] || SVG.tshirt)(brandColor);
+    const url = (p.brand === 'U' ? UQ_BASE : GU_BASE) + encodeURIComponent(p.kw);
     return `
-      <a class="edm-card anim" href="${searchUrl}" target="_blank" rel="noopener"
-         style="animation-delay:${i * .07}s" title="${p.name} — 點擊前往官網">
-        <div class="edm-card-img" style="background:${p.bg};">
+      <a class="edm-card anim" href="${url}" target="_blank" rel="noopener"
+         style="animation-delay:${i*.07}s" title="${p.name}">
+        <div class="edm-card-img" style="background:${p.bg};filter:${imgFilter};">
           <div class="edm-badge-wrap">
-            <span class="edm-brand-badge ${p.brand === 'U' ? 'badge-u' : 'badge-g'}">${p.brand === 'U' ? 'UNIQLO' : 'GU'}</span>
-            ${p.tag ? `<span class="edm-tag-badge">${p.tag}</span>` : ''}
+            <span class="edm-brand-badge ${p.brand==='U'?'badge-u':'badge-g'}">${p.brand==='U'?'UNIQLO':'GU'}</span>
+            ${p.tag?`<span class="edm-tag-badge">${p.tag}</span>`:''}
           </div>
-          <div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;filter:drop-shadow(0 4px 8px rgba(0,0,0,.1));">
+          <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 3px 6px rgba(0,0,0,.12));">
             ${svgHtml}
           </div>
         </div>
         <div class="edm-info">
           <div class="edm-name">${p.name}</div>
           <div class="edm-sub">${p.sub}</div>
-          <div class="edm-price-row">
-            <span class="edm-price">NT$${p.price.toLocaleString()}</span>
-          </div>
-          <div class="edm-dots">
-            ${p.dots.map(c => `<div class="edm-dot" style="background:${c}"></div>`).join('')}
-          </div>
+          <div class="edm-price">NT$${p.price.toLocaleString()}</div>
+          <div class="edm-dots">${p.dots.map(c=>`<div class="edm-dot" style="background:${c}"></div>`).join('')}</div>
           <div class="edm-link-btn">查看商品 →</div>
         </div>
       </a>`;
