@@ -1371,6 +1371,7 @@ const state = {
   bodyType: '梨形',
   skinTone: '冷白',
   colors: ['大地色'],
+  budget: 'mid',
   beautyTab: 'makeup',
   favorites: JSON.parse(localStorage.getItem('styleai_favs') || '[]')
 };
@@ -1442,11 +1443,13 @@ function bindEvents() {
     }
   });
 
-  // Budget chips
+  // Budget chips — switch product tier and re-render eDM
   document.getElementById('budgetChips').addEventListener('click', (e) => {
     if (!e.target.classList.contains('chip')) return;
     document.querySelectorAll('#budgetChips .chip').forEach(c => c.classList.remove('active'));
     e.target.classList.add('active');
+    state.budget = BUDGET_KEY[e.target.dataset.val] || 'mid';
+    renderEDM(state.style);
   });
 
   // Weather
@@ -1465,105 +1468,182 @@ function bindEvents() {
 }
 
 // ═══════════════════════════════════════════
+//  CLOTHING SVG ICONS (fashion sketch style)
+// ═══════════════════════════════════════════
+const SVG = {
+  shirt:    c => `<svg viewBox="0 0 100 110" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:64px;height:70px"><path d="M38 8C34 10 26 14 18 20L6 36l16 8v56h56V44l16-8L82 20C74 14 66 10 62 8c-3 8-7 12-12 12S41 16 38 8Z" stroke="${c}" stroke-width="1.8" fill="${c}18" stroke-linejoin="round"/><line x1="50" y1="20" x2="50" y2="34" stroke="${c}" stroke-width="1.2" stroke-dasharray="2 2"/></svg>`,
+  tshirt:   c => `<svg viewBox="0 0 100 90" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:64px;height:58px"><path d="M38 6C34 8 22 14 12 20L4 38l18 6v40h56V44l18-6-8-18C78 14 66 8 62 6c-3 7-7 11-12 11S41 13 38 6Z" stroke="${c}" stroke-width="1.8" fill="${c}18" stroke-linejoin="round"/></svg>`,
+  pants:    c => `<svg viewBox="0 0 80 120" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:52px;height:78px"><path d="M12 8h56l-2 46H46v58H34V54H14Z" stroke="${c}" stroke-width="1.8" fill="${c}18" stroke-linejoin="round"/><line x1="40" y1="8" x2="40" y2="54" stroke="${c}" stroke-width="1.2"/><line x1="12" y1="20" x2="68" y2="20" stroke="${c}" stroke-width="1" stroke-dasharray="3 2" opacity=".55"/></svg>`,
+  dress:    c => `<svg viewBox="0 0 100 130" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:65px;height:85px"><path d="M40 7C36 9 28 13 22 16L10 32l14 6-4 28C17 83 13 104 10 122h80c-3-18-7-39-10-56l-4-28 14-6L78 16C72 13 64 9 60 7c-3 7-6 11-10 11S43 14 40 7Z" stroke="${c}" stroke-width="1.8" fill="${c}18" stroke-linejoin="round"/><line x1="20" y1="65" x2="80" y2="65" stroke="${c}" stroke-width="1" stroke-dasharray="3 2" opacity=".45"/></svg>`,
+  coat:     c => `<svg viewBox="0 0 110 130" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:72px;height:85px"><path d="M42 8L22 18 6 38l18 10v70h64V48l18-10L90 18 68 8l-8 15-5 4-5-4Z" stroke="${c}" stroke-width="1.8" fill="${c}18" stroke-linejoin="round"/><line x1="55" y1="27" x2="55" y2="118" stroke="${c}" stroke-width="1.2"/><circle cx="55" cy="46" r="2.2" fill="${c}"/><circle cx="55" cy="62" r="2.2" fill="${c}"/><circle cx="55" cy="78" r="2.2" fill="${c}"/><circle cx="55" cy="94" r="2.2" fill="${c}"/></svg>`,
+  knitwear: c => `<svg viewBox="0 0 100 110" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:65px;height:72px"><path d="M40 8C36 10 24 16 14 22L6 42l16 6v52h56V48l16-6-8-20C76 16 64 10 60 8c-3 8-6 12-10 12S43 16 40 8Z" stroke="${c}" stroke-width="1.8" fill="${c}18" stroke-linejoin="round"/><path d="M36 8Q43 3 50 3Q57 3 64 8" stroke="${c}" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`,
+  skirt:    c => `<svg viewBox="0 0 100 110" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:65px;height:72px"><path d="M30 8h40l4 24 14 70H12l14-70Z" stroke="${c}" stroke-width="1.8" fill="${c}18" stroke-linejoin="round"/><line x1="26" y1="32" x2="74" y2="32" stroke="${c}" stroke-width="1.5"/><line x1="30" y1="8" x2="70" y2="8" stroke="${c}" stroke-width="3" stroke-linecap="round"/></svg>`,
+  bag:      c => `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:65px;height:65px"><path d="M20 34Q20 24 30 24h40Q80 24 80 34l4 56Q84 96 76 96H24Q16 96 16 90Z" stroke="${c}" stroke-width="1.8" fill="${c}18" stroke-linejoin="round"/><path d="M36 24Q36 10 50 10Q64 10 64 24" stroke="${c}" stroke-width="1.8" fill="none"/><rect x="40" y="44" width="20" height="14" rx="3" stroke="${c}" stroke-width="1.5" fill="none"/></svg>`,
+  shoes:    c => `<svg viewBox="0 0 110 75" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:72px;height:49px"><path d="M8 54C8 54 20 38 44 36h30l8-10Q90 18 100 22l8 8Q112 40 98 46L56 52v6Z" stroke="${c}" stroke-width="1.8" fill="${c}18" stroke-linejoin="round"/><path d="M8 54h48v8Q8 64 8 62Z" stroke="${c}" stroke-width="1.5" fill="${c}22"/></svg>`,
+  shorts:   c => `<svg viewBox="0 0 90 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:58px;height:52px"><path d="M10 8h70L76 58H52V38H38v20H14Z" stroke="${c}" stroke-width="1.8" fill="${c}18" stroke-linejoin="round"/><line x1="45" y1="8" x2="45" y2="38" stroke="${c}" stroke-width="1.2"/><line x1="10" y1="20" x2="80" y2="20" stroke="${c}" stroke-width="1" stroke-dasharray="3 2" opacity=".55"/></svg>`,
+  tank:     c => `<svg viewBox="0 0 90 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:58px;height:65px"><path d="M30 8C26 8 16 16 12 24l4 4 12-6v68h46V22L86 28l4-4C86 16 76 8 60 8c-2 7-5 10-15 10S32 15 30 8Z" stroke="${c}" stroke-width="1.8" fill="${c}18" stroke-linejoin="round"/></svg>`,
+};
+
+// ═══════════════════════════════════════════
 //  PRODUCT DATABASE (UNIQLO × GU)
 // ═══════════════════════════════════════════
 const SEASON = '2025 Spring / Summer';
-const UQ = 'https://www.uniqlo.com/tw/zh_TW/search?q=';
-const GU = 'https://www.gu-global.com/tw/zh_TW/search?q=';
+// budgets: 'low'=平價, 'mid'=中價位, 'high'=精品感
+// kw: short search keyword (simpler = better results)
+const UQ_BASE = 'https://www.uniqlo.com/tw/zh_TW/search?q=';
+const GU_BASE = 'https://www.gu-global.com/tw/zh_TW/search?q=';
 
 // bg: CSS gradient string for the product card image area
+// budgets: 'low'=平價(<600), 'mid'=中價位(600-1800), 'high'=精品感(>1800)
+// kw: short keyword for search URL
 const PRODUCTS = {
   elegant: [
-    { brand:'U', name:'府綢方領衫', sub:'100% 棉 · 7色', price:'NT$890', dots:['#f5efe0','#2e2820','#c9a96e','#b0b8c1','#7d9b76'], tag:'熱銷', bg:'linear-gradient(160deg,#f9f5ed,#e8ddd0)', icon:'👔', url: UQ+'府綢方領衫' },
-    { brand:'U', name:'高腰直筒褲', sub:'柔軟彈性 · 標準版', price:'NT$990', dots:['#2e2820','#8b7355','#c4c4c4','#1a3a2a'], tag:'', bg:'linear-gradient(160deg,#e8e0d4,#d4c8b8)', icon:'👖', url: UQ+'高腰直筒褲' },
-    { brand:'U', name:'針織V領毛衣', sub:'棉混紡 · 輕盈保暖', price:'NT$990', dots:['#f5efe0','#c9a96e','#2e2820','#d4877a'], tag:'新品', bg:'linear-gradient(160deg,#fdf6ee,#eddfc8)', icon:'🧶', url: UQ+'針織V領毛衣' },
-    { brand:'G', name:'A字長裙', sub:'垂墜感面料 · 5色', price:'NT$590', dots:['#2e2820','#c4a882','#f5efe0','#8b4560'], tag:'', bg:'linear-gradient(160deg,#f0ebe2,#ddd5c8)', icon:'👗', url: GU+'A字長裙' },
+    { brand:'U', type:'tshirt',   name:'優質棉圓領T恤', sub:'100%棉 · 22色', price:490,  tag:'',   budgets:['low'],       dots:['#f5efe0','#2e2820','#c9a96e','#b0b8c1'], bg:'linear-gradient(150deg,#f9f5ed,#ede5d8)', kw:'優質棉T恤' },
+    { brand:'U', type:'shirt',    name:'府綢方領衫',   sub:'100%棉 · 7色',  price:890,  tag:'熱銷', budgets:['mid'],       dots:['#f5efe0','#2e2820','#c9a96e','#b0b8c1','#7d9b76'], bg:'linear-gradient(150deg,#f4f0e8,#e8e0d0)', kw:'府綢' },
+    { brand:'U', type:'pants',    name:'高腰直筒褲',   sub:'柔軟彈性 · 8色', price:990,  tag:'',   budgets:['mid'],       dots:['#2e2820','#8b7355','#c4c4c4','#1a3a2a'], bg:'linear-gradient(150deg,#e8e4dc,#d8d0c4)', kw:'直筒褲' },
+    { brand:'U', type:'knitwear', name:'針織V領毛衣',  sub:'棉混紡 · 6色',  price:990,  tag:'新品', budgets:['mid'],       dots:['#f5efe0','#c9a96e','#2e2820','#d4877a'], bg:'linear-gradient(150deg,#fdf6ee,#eddfc8)', kw:'針織毛衣' },
+    { brand:'U', type:'coat',     name:'羊絨混紡大衣', sub:'羊絨30% · 4色', price:3990, tag:'精選', budgets:['high'],      dots:['#2e2820','#8b7355','#c4c4c4','#1a3a2a'], bg:'linear-gradient(150deg,#e4e0d8,#d4ccbe)', kw:'羊絨大衣' },
+    { brand:'G', type:'skirt',    name:'A字長裙',     sub:'垂墜感 · 5色',  price:590,  tag:'',   budgets:['low','mid'], dots:['#2e2820','#c4a882','#f5efe0','#8b4560'], bg:'linear-gradient(150deg,#f0ebe2,#e4ddd4)', kw:'A字裙' },
+    { brand:'G', type:'coat',     name:'短版西裝外套', sub:'修身版 · 4色',  price:790,  tag:'',   budgets:['mid'],       dots:['#2e2820','#8b7355','#c4c4c4','#4a6741'], bg:'linear-gradient(150deg,#e8e4dc,#dcd8d0)', kw:'西裝外套' },
+    { brand:'G', type:'skirt',    name:'格紋迷你裙',  sub:'百褶設計 · 3款', price:390,  tag:'熱銷', budgets:['low'],       dots:['#c4a882','#2e2820','#6b8cae'], bg:'linear-gradient(150deg,#ede8e0,#e0d8cc)', kw:'格紋裙' },
   ],
   casual: [
-    { brand:'U', name:'優質棉圓領T恤', sub:'100%棉 · 22色', price:'NT$490', dots:['#ffffff','#2e2820','#6b8cae','#c4c4c4','#e8c97a'], tag:'暢銷', bg:'linear-gradient(160deg,#f0f4f8,#dde8f0)', icon:'👕', url: UQ+'優質棉圓領T恤' },
-    { brand:'U', name:'輕型羽絨外套', sub:'附收納袋 · 可機洗', price:'NT$1,990', dots:['#2e2820','#6b8cae','#c4c4c4','#8b6f47'], tag:'', bg:'linear-gradient(160deg,#e8ecf0,#d4dce8)', icon:'🧥', url: UQ+'輕型羽絨外套' },
-    { brand:'G', name:'闊腿牛仔褲', sub:'高腰設計 · 4色', price:'NT$590', dots:['#6b8cae','#2e2820','#c4c4c4'], tag:'新品', bg:'linear-gradient(160deg,#dde4ee,#c8d4e4)', icon:'👖', url: GU+'闊腿牛仔褲' },
-    { brand:'G', name:'帆布托特包', sub:'大容量 · 3色', price:'NT$390', dots:['#f5efe0','#2e2820','#6b8cae'], tag:'', bg:'linear-gradient(160deg,#f5f0e8,#e4ddd4)', icon:'🛍️', url: GU+'帆布托特包' },
+    { brand:'U', type:'tshirt',   name:'優質棉圓領T恤', sub:'100%棉 · 22色', price:490,  tag:'暢銷', budgets:['low','mid'], dots:['#ffffff','#2e2820','#6b8cae','#c4c4c4','#e8c97a'], bg:'linear-gradient(150deg,#f0f4f8,#dde8f0)', kw:'優質棉T恤' },
+    { brand:'U', type:'pants',    name:'輕鬆感錐形褲', sub:'彈性舒適 · 6色', price:790,  tag:'',   budgets:['low','mid'], dots:['#2e2820','#6b8cae','#8b7355','#c4c4c4'], bg:'linear-gradient(150deg,#e8ecf0,#d8e0e8)', kw:'錐形褲' },
+    { brand:'U', type:'coat',     name:'輕型羽絨外套', sub:'附收納袋 · 可洗', price:1990, tag:'',   budgets:['mid'],       dots:['#2e2820','#6b8cae','#c4c4c4','#8b6f47'], bg:'linear-gradient(150deg,#e4e8ec,#d4dce4)', kw:'羽絨外套' },
+    { brand:'U', type:'coat',     name:'防風連帽外套', sub:'輕薄可收納 · 5色', price:1490, tag:'新品', budgets:['mid'],      dots:['#2e2820','#ffffff','#6b8cae','#8b7355'], bg:'linear-gradient(150deg,#dde4ec,#ccd8e4)', kw:'連帽外套' },
+    { brand:'U', type:'coat',     name:'BLOCKTECH大衣', sub:'防水防風 · 3色', price:3490, tag:'精選', budgets:['high'],      dots:['#2e2820','#1a3a2a','#8b7355'], bg:'linear-gradient(150deg,#d8e0e8,#c8d4e0)', kw:'BLOCKTECH' },
+    { brand:'G', type:'pants',    name:'闊腿牛仔褲',  sub:'高腰設計 · 4色', price:590,  tag:'新品', budgets:['low','mid'], dots:['#6b8cae','#2e2820','#c4c4c4'], bg:'linear-gradient(150deg,#dde4ee,#c8d4e4)', kw:'闊腿牛仔褲' },
+    { brand:'G', type:'bag',      name:'帆布托特包',  sub:'大容量 · 3色',  price:390,  tag:'',   budgets:['low'],       dots:['#f5efe0','#2e2820','#6b8cae'], bg:'linear-gradient(150deg,#f5f0e8,#e4ddd4)', kw:'帆布包' },
+    { brand:'G', type:'tshirt',   name:'條紋圓領T恤', sub:'棉質 · 3色',    price:290,  tag:'',   budgets:['low'],       dots:['#ffffff','#2e2820','#6b8cae'], bg:'linear-gradient(150deg,#eef2f8,#dde4f0)', kw:'條紋T恤' },
   ],
   office: [
-    { brand:'U', name:'感動褲 標準版', sub:'防皺彈性 · 8色', price:'NT$990', dots:['#2e2820','#1a3a2a','#4a6741','#8b7355','#c4c4c4'], tag:'熱銷', bg:'linear-gradient(160deg,#e4e8e4,#d0d8d0)', icon:'👖', url: UQ+'感動褲' },
-    { brand:'U', name:'棉質西裝外套', sub:'修身版型 · 可水洗', price:'NT$1,990', dots:['#2e2820','#4a6741','#8b7355','#1a1a2e'], tag:'新品', bg:'linear-gradient(160deg,#e0e4e0,#ccd4cc)', icon:'🧥', url: UQ+'棉質西裝外套' },
-    { brand:'U', name:'府綢細條紋衬衫', sub:'防皺處理 · 5色', price:'NT$890', dots:['#ffffff','#6b8cae','#2e2820','#c9a96e'], tag:'', bg:'linear-gradient(160deg,#eef2f8,#dde4f0)', icon:'👔', url: UQ+'府綢衬衫' },
-    { brand:'G', name:'短版V領開衫', sub:'輕薄針織 · 6色', price:'NT$490', dots:['#2e2820','#f5efe0','#c9a96e','#8b4560'], tag:'', bg:'linear-gradient(160deg,#f0ece4,#e0d8cc)', icon:'🧶', url: GU+'開衫' },
+    { brand:'U', type:'pants',    name:'感動褲 標準版', sub:'防皺彈性 · 8色', price:990,  tag:'熱銷', budgets:['low','mid'], dots:['#2e2820','#1a3a2a','#4a6741','#8b7355','#c4c4c4'], bg:'linear-gradient(150deg,#e4e8e4,#d4dcd4)', kw:'感動褲' },
+    { brand:'U', type:'shirt',    name:'府綢條紋衬衫', sub:'防皺處理 · 5色', price:890,  tag:'',   budgets:['low','mid'], dots:['#ffffff','#6b8cae','#2e2820','#c9a96e'], bg:'linear-gradient(150deg,#eef2f8,#dde4f0)', kw:'府綢衬衫' },
+    { brand:'U', type:'coat',     name:'棉質西裝外套', sub:'可水洗 · 6色',  price:1990, tag:'新品', budgets:['mid'],       dots:['#2e2820','#4a6741','#8b7355','#1a1a2e'], bg:'linear-gradient(150deg,#e0e4e0,#ccd4cc)', kw:'西裝外套' },
+    { brand:'U', type:'coat',     name:'羊毛混紡大衣', sub:'羊毛50% · 4色', price:3990, tag:'精選', budgets:['high'],      dots:['#2e2820','#4a6741','#8b7355','#c4c4c4'], bg:'linear-gradient(150deg,#d8dcd8,#c8d0c8)', kw:'羊毛大衣' },
+    { brand:'G', type:'knitwear', name:'V領開衫',     sub:'輕薄針織 · 6色', price:490,  tag:'',   budgets:['low'],       dots:['#2e2820','#f5efe0','#c9a96e','#8b4560'], bg:'linear-gradient(150deg,#f0ece4,#e0d8cc)', kw:'開衫' },
+    { brand:'G', type:'pants',    name:'高腰修身長褲', sub:'彈力面料 · 5色', price:590,  tag:'',   budgets:['low','mid'], dots:['#2e2820','#1a3a2a','#8b7355','#c4c4c4'], bg:'linear-gradient(150deg,#e4e8e4,#d8dcd8)', kw:'修身長褲' },
+    { brand:'G', type:'coat',     name:'短版套裝外套', sub:'上衣褲子可拆買', price:990,  tag:'熱銷', budgets:['mid'],       dots:['#2e2820','#1a1a2e','#8b7355'], bg:'linear-gradient(150deg,#dce0dc,#ccd4cc)', kw:'套裝外套' },
+    { brand:'U', type:'shoes',    name:'皮革感低跟鞋', sub:'舒適鞋墊 · 3色', price:1490, tag:'',   budgets:['mid','high'], dots:['#2e2820','#8b7355','#f5efe0'], bg:'linear-gradient(150deg,#e8e4dc,#dcd8d0)', kw:'低跟鞋' },
   ],
   date: [
-    { brand:'U', name:'府綢荷葉領上衣', sub:'垂墜感 · 4色', price:'NT$890', dots:['#f9e0e0','#ffffff','#c9a96e','#2e2820'], tag:'新品', bg:'linear-gradient(160deg,#fde8e8,#f4d8dc)', icon:'🌸', url: UQ+'府綢荷葉領' },
-    { brand:'U', name:'棉質蕾絲罩衫', sub:'透膚設計 · 3色', price:'NT$790', dots:['#ffffff','#f9e0e0','#2e2820'], tag:'', bg:'linear-gradient(160deg,#fdf0f4,#f4e0e8)', icon:'👗', url: UQ+'蕾絲罩衫' },
-    { brand:'G', name:'花卉印花洋裝', sub:'A字剪裁 · 2色', price:'NT$790', dots:['#f9e0e0','#ffffff','#c47a8a'], tag:'熱銷', bg:'linear-gradient(160deg,#fce4ec,#f8d0dc)', icon:'💃', url: GU+'花卉印花洋裝' },
-    { brand:'G', name:'迷你鏈條包', sub:'人造皮革 · 5色', price:'NT$590', dots:['#2e2820','#c47a8a','#c9a96e','#ffffff','#8b4560'], tag:'', bg:'linear-gradient(160deg,#f4e0e8,#e8d0d8)', icon:'👜', url: GU+'鏈條包' },
+    { brand:'U', type:'shirt',    name:'府綢荷葉領上衣', sub:'垂墜感 · 4色', price:890,  tag:'新品', budgets:['low','mid'], dots:['#f9e0e0','#ffffff','#c9a96e','#2e2820'], bg:'linear-gradient(150deg,#fde8e8,#f4d8dc)', kw:'荷葉領' },
+    { brand:'U', type:'dress',    name:'絲光棉洋裝',   sub:'A字剪裁 · 3色', price:1290, tag:'',   budgets:['mid'],       dots:['#f9e0e0','#c47a8a','#ffffff'], bg:'linear-gradient(150deg,#fdf0f4,#f4e0e8)', kw:'棉質洋裝' },
+    { brand:'U', type:'dress',    name:'府綢印花洋裝', sub:'垂墜飄逸 · 2色', price:1990, tag:'精選', budgets:['high'],      dots:['#f9e0e0','#c47a8a'], bg:'linear-gradient(150deg,#fce4ec,#f8d0dc)', kw:'印花洋裝' },
+    { brand:'G', type:'dress',    name:'花卉印花洋裝', sub:'A字剪裁 · 2色', price:790,  tag:'熱銷', budgets:['low','mid'], dots:['#f9e0e0','#ffffff','#c47a8a'], bg:'linear-gradient(150deg,#fce4ec,#f8d0dc)', kw:'花卉洋裝' },
+    { brand:'G', type:'skirt',    name:'緞面迷你裙',  sub:'光澤感 · 4色',  price:490,  tag:'',   budgets:['low'],       dots:['#c47a8a','#2e2820','#f9e0e0','#c9a96e'], bg:'linear-gradient(150deg,#f4e0e8,#ecd4e0)', kw:'緞面裙' },
+    { brand:'G', type:'bag',      name:'迷你鏈條包',  sub:'人造皮革 · 5色', price:590,  tag:'',   budgets:['low','mid'], dots:['#2e2820','#c47a8a','#c9a96e','#ffffff'], bg:'linear-gradient(150deg,#f0e4ec,#e4d4e4)', kw:'鏈條包' },
+    { brand:'G', type:'shoes',    name:'繫帶高跟涼鞋', sub:'粗跟穩定 · 3色', price:790,  tag:'',   budgets:['mid'],       dots:['#2e2820','#c4a882','#f9e0e0'], bg:'linear-gradient(150deg,#ece0e8,#e0d4dc)', kw:'繫帶涼鞋' },
+    { brand:'U', type:'shoes',    name:'方頭芭蕾平底', sub:'真皮鞋底 · 4色', price:1490, tag:'',   budgets:['high'],      dots:['#2e2820','#c4a882','#f9e0e0','#c47a8a'], bg:'linear-gradient(150deg,#e8e0dc,#dcd4d0)', kw:'芭蕾平底鞋' },
   ],
   street: [
-    { brand:'U', name:'寬版版印花T恤', sub:'厚磅棉 · 多款', price:'NT$590', dots:['#000000','#ffffff','#ff3c3c','#ffd700'], tag:'', bg:'linear-gradient(160deg,#2e2820,#1a1a1a)', icon:'👕', url: UQ+'印花T恤' },
-    { brand:'U', name:'輕便風衣外套', sub:'防潑水 · 4色', price:'NT$1,490', dots:['#2e2820','#c4c4c4','#ffffff','#ff3c3c'], tag:'新品', bg:'linear-gradient(160deg,#3a3a3a,#2a2a2a)', icon:'🧥', url: UQ+'風衣外套' },
-    { brand:'G', name:'Cargo 長褲', sub:'多口袋設計 · 4色', price:'NT$790', dots:['#2e2820','#8b7355','#3d5a3e','#c4c4c4'], tag:'熱銷', bg:'linear-gradient(160deg,#3d4030,#2e3020)', icon:'👖', url: GU+'Cargo長褲' },
-    { brand:'G', name:'厚底運動拖鞋', sub:'EVA鞋底 · 5色', price:'NT$490', dots:['#000000','#ffffff','#ff3c3c','#ffd700','#6b8cae'], tag:'', bg:'linear-gradient(160deg,#2a2a2e,#1a1a22)', icon:'👟', url: GU+'厚底拖鞋' },
+    { brand:'U', type:'tshirt',   name:'印花T恤',     sub:'厚磅棉 · 多款',  price:590,  tag:'',   budgets:['low'],       dots:['#000000','#ffffff','#ff3c3c','#ffd700'], bg:'linear-gradient(150deg,#2e2820,#1a1818)', kw:'印花T恤' },
+    { brand:'U', type:'coat',     name:'輕便風衣外套', sub:'防潑水 · 4色',  price:1490, tag:'新品', budgets:['mid'],       dots:['#2e2820','#c4c4c4','#ffffff','#ff3c3c'], bg:'linear-gradient(150deg,#383430,#242020)', kw:'風衣外套' },
+    { brand:'U', type:'coat',     name:'BLOCKTECH帽T', sub:'防水保暖 · 3色', price:2490, tag:'',   budgets:['high'],      dots:['#2e2820','#1a1a1a','#c4c4c4'], bg:'linear-gradient(150deg,#2c2c30,#1c1c20)', kw:'BLOCKTECH' },
+    { brand:'G', type:'pants',    name:'Cargo長褲',   sub:'多口袋 · 4色',  price:790,  tag:'熱銷', budgets:['low','mid'], dots:['#2e2820','#8b7355','#3d5a3e','#c4c4c4'], bg:'linear-gradient(150deg,#3d4030,#2e3020)', kw:'Cargo長褲' },
+    { brand:'G', type:'tshirt',   name:'Oversized短T', sub:'寬版 · 5色',   price:390,  tag:'',   budgets:['low'],       dots:['#ffffff','#000000','#ff3c3c','#ffd700'], bg:'linear-gradient(150deg,#2a2826,#1a1816)', kw:'寬版T恤' },
+    { brand:'G', type:'shoes',    name:'厚底球鞋',    sub:'EVA鞋底 · 4色', price:890,  tag:'',   budgets:['mid'],       dots:['#000000','#ffffff','#c4c4c4'], bg:'linear-gradient(150deg,#28282c,#181820)', kw:'厚底球鞋' },
+    { brand:'G', type:'bag',      name:'迷你腰包',    sub:'多夾層 · 5色',  price:490,  tag:'',   budgets:['low'],       dots:['#000000','#ffffff','#ff3c3c','#ffd700'], bg:'linear-gradient(150deg,#30302e,#201e1c)', kw:'腰包' },
+    { brand:'U', type:'coat',     name:'MA-1飛行外套', sub:'經典版型 · 3色', price:1990, tag:'限定', budgets:['high'],      dots:['#3d5a3e','#2e2820','#c4c4c4'], bg:'linear-gradient(150deg,#2c3028,#1c2018)', kw:'飛行外套' },
   ],
   resort: [
-    { brand:'U', name:'棉麻混紡開衫', sub:'透氣涼感 · 5色', price:'NT$990', dots:['#87ceeb','#f5deb3','#ffffff','#228b22','#ff9060'], tag:'', bg:'linear-gradient(160deg,#e8f4f8,#d0ecf4)', icon:'🌊', url: UQ+'棉麻開衫' },
-    { brand:'U', name:'AIRism 吊帶背心', sub:'涼感速乾 · 10色', price:'NT$490', dots:['#ffffff','#87ceeb','#f5deb3','#ff9060','#c47a8a'], tag:'暢銷', bg:'linear-gradient(160deg,#d4eef8,#c0e4f0)', icon:'🩱', url: UQ+'AIRism背心' },
-    { brand:'G', name:'印花寬版短褲', sub:'棉麻混紡 · 3款', price:'NT$490', dots:['#87ceeb','#f5deb3','#228b22'], tag:'新品', bg:'linear-gradient(160deg,#e0f0e8,#c8e4d4)', icon:'🩳', url: GU+'印花短褲' },
-    { brand:'G', name:'草編托特包', sub:'天然材質 · 2色', price:'NT$590', dots:['#c8a876','#f5deb3'], tag:'', bg:'linear-gradient(160deg,#f5ecd8,#e8dcc8)', icon:'🧺', url: GU+'草編包' },
+    { brand:'U', type:'knitwear', name:'棉麻混紡開衫', sub:'透氣涼感 · 5色', price:990,  tag:'',   budgets:['low','mid'], dots:['#87ceeb','#f5deb3','#ffffff','#228b22'], bg:'linear-gradient(150deg,#e8f4f8,#d0ecf4)', kw:'棉麻開衫' },
+    { brand:'U', type:'tank',     name:'AIRism吊帶背心', sub:'涼感速乾 · 10色', price:490, tag:'暢銷', budgets:['low'],      dots:['#ffffff','#87ceeb','#f5deb3','#ff9060'], bg:'linear-gradient(150deg,#d4eef8,#c0e4f0)', kw:'AIRism背心' },
+    { brand:'U', type:'dress',    name:'印花連身裙',  sub:'麻料 · 2色',    price:1490, tag:'',   budgets:['mid'],       dots:['#87ceeb','#f5deb3','#228b22'], bg:'linear-gradient(150deg,#e0f0e8,#cce8e0)', kw:'印花連身裙' },
+    { brand:'U', type:'dress',    name:'麻料寬版洋裝', sub:'100%亞麻 · 3色', price:1990, tag:'精選', budgets:['high'],      dots:['#f5deb3','#ffffff','#87ceeb'], bg:'linear-gradient(150deg,#f0eadc,#e4dec8)', kw:'麻料洋裝' },
+    { brand:'G', type:'shorts',   name:'印花寬版短褲', sub:'棉麻混紡 · 3款', price:490,  tag:'新品', budgets:['low'],       dots:['#87ceeb','#f5deb3','#228b22'], bg:'linear-gradient(150deg,#e0f0e8,#c8e4d4)', kw:'印花短褲' },
+    { brand:'G', type:'bag',      name:'草編托特包',  sub:'天然材質 · 2色', price:590,  tag:'',   budgets:['low','mid'], dots:['#c8a876','#f5deb3'], bg:'linear-gradient(150deg,#f5ecd8,#e8dcc8)', kw:'草編包' },
+    { brand:'G', type:'dress',    name:'吊帶印花洋裝', sub:'垂墜設計 · 2色', price:790,  tag:'熱銷', budgets:['mid'],       dots:['#f9e0e0','#87ceeb','#f5deb3'], bg:'linear-gradient(150deg,#fce8e0,#f0dcd4)', kw:'吊帶洋裝' },
+    { brand:'G', type:'shoes',    name:'草編平底涼鞋', sub:'天然材質 · 2色', price:590,  tag:'',   budgets:['low','mid'], dots:['#c8a876','#f5deb3'], bg:'linear-gradient(150deg,#f0e8d8,#e4dcc8)', kw:'草編涼鞋' },
   ],
   athleisure: [
-    { brand:'U', name:'AIRism 運動背心', sub:'涼感抗菌 · 8色', price:'NT$490', dots:['#000000','#ffffff','#00c4cc','#ff6b6b','#c4c4c4'], tag:'熱銷', bg:'linear-gradient(160deg,#e4f0f4,#cce4ec)', icon:'🩱', url: UQ+'AIRism運動背心' },
-    { brand:'U', name:'DRY-EX 運動短褲', sub:'快乾彈性 · 6色', price:'NT$590', dots:['#000000','#ffffff','#00c4cc','#ff6b6b'], tag:'', bg:'linear-gradient(160deg,#e0eef4,#cce0ec)', icon:'🩳', url: UQ+'運動短褲' },
-    { brand:'U', name:'輕薄防風外套', sub:'可收納 · 5色', price:'NT$1,290', dots:['#2e2820','#ffffff','#00c4cc','#c4c4c4'], tag:'新品', bg:'linear-gradient(160deg,#dce8f0,#c8d8e8)', icon:'🧥', url: UQ+'防風外套' },
-    { brand:'G', name:'高腰瑜伽褲', sub:'四向彈力 · 5色', price:'NT$590', dots:['#000000','#c4c4c4','#8b4560','#00c4cc'], tag:'', bg:'linear-gradient(160deg,#2a2a2e,#1e1e26)', icon:'🧘', url: GU+'瑜伽褲' },
+    { brand:'U', type:'tank',     name:'AIRism運動背心', sub:'涼感抗菌 · 8色', price:490, tag:'熱銷', budgets:['low'],       dots:['#000000','#ffffff','#00c4cc','#ff6b6b'], bg:'linear-gradient(150deg,#e0eef4,#cce0ec)', kw:'AIRism背心' },
+    { brand:'U', type:'shorts',   name:'DRY-EX運動短褲', sub:'快乾彈性 · 6色', price:590, tag:'',   budgets:['low','mid'], dots:['#000000','#ffffff','#00c4cc','#ff6b6b'], bg:'linear-gradient(150deg,#dceef4,#cce0ec)', kw:'運動短褲' },
+    { brand:'U', type:'coat',     name:'輕薄防風外套', sub:'可收納 · 5色',  price:1290, tag:'新品', budgets:['mid'],       dots:['#2e2820','#ffffff','#00c4cc','#c4c4c4'], bg:'linear-gradient(150deg,#d8e8f0,#c4d8e8)', kw:'防風外套' },
+    { brand:'U', type:'coat',     name:'Sprz NY聯名帽T', sub:'設計師合作款', price:1990, tag:'限定', budgets:['high'],      dots:['#2e2820','#ffffff','#ff6b6b'], bg:'linear-gradient(150deg,#ccd8e4,#bcccd8)', kw:'聯名衛衣' },
+    { brand:'G', type:'pants',    name:'高腰瑜伽褲',  sub:'四向彈力 · 5色', price:590,  tag:'',   budgets:['low','mid'], dots:['#000000','#c4c4c4','#8b4560','#00c4cc'], bg:'linear-gradient(150deg,#242428,#181820)', kw:'瑜伽褲' },
+    { brand:'G', type:'tshirt',   name:'抗UV速乾T',   sub:'機能面料 · 4色', price:390,  tag:'',   budgets:['low'],       dots:['#000000','#ffffff','#c4c4c4','#00c4cc'], bg:'linear-gradient(150deg,#d4e4ec,#c4d8e4)', kw:'速乾T恤' },
+    { brand:'G', type:'coat',     name:'連帽運動外套', sub:'刷毛保暖 · 4色', price:790,  tag:'',   budgets:['mid'],       dots:['#2e2820','#ffffff','#00c4cc'], bg:'linear-gradient(150deg,#ccd8e8,#bcc8d8)', kw:'連帽外套' },
+    { brand:'G', type:'bag',      name:'運動腰包',    sub:'防水 · 4色',    price:390,  tag:'',   budgets:['low'],       dots:['#000000','#ffffff','#00c4cc','#ff6b6b'], bg:'linear-gradient(150deg,#d0dce8,#c0ccd8)', kw:'腰包' },
   ],
   dark: [
-    { brand:'U', name:'府綢黑色衬衫', sub:'垂墜感 · 修身版', price:'NT$890', dots:['#000000','#1a1a2e','#6b0f1a'], tag:'', bg:'linear-gradient(160deg,#1a1a1a,#0d0d0d)', icon:'🖤', url: UQ+'黑色衬衫' },
-    { brand:'U', name:'輕型羽絨外套', sub:'黑色限定 · 啞光', price:'NT$1,990', dots:['#000000','#1a1a2e'], tag:'限定', bg:'linear-gradient(160deg,#1e1e24,#12121a)', icon:'🧥', url: UQ+'黑色羽絨外套' },
-    { brand:'G', name:'緊身踝靴長褲', sub:'彈力合身 · 3色', price:'NT$590', dots:['#000000','#1a1a2e','#5c2d91'], tag:'熱銷', bg:'linear-gradient(160deg,#1a1a22,#0e0e18)', icon:'👖', url: GU+'踝靴長褲' },
-    { brand:'G', name:'皮革感腰帶包', sub:'磁扣設計 · 4色', price:'NT$490', dots:['#000000','#1a1a2e','#5c2d91','#c0c0c0'], tag:'新品', bg:'linear-gradient(160deg,#1e1a22,#14121a)', icon:'👜', url: GU+'腰帶包' },
+    { brand:'U', type:'shirt',    name:'府綢黑色衬衫', sub:'垂墜感 · 修身版', price:890, tag:'',   budgets:['low','mid'], dots:['#000000','#1a1a2e','#6b0f1a'], bg:'linear-gradient(150deg,#1c1c1c,#101010)', kw:'黑色衬衫' },
+    { brand:'U', type:'coat',     name:'輕型羽絨外套', sub:'黑色啞光 · 限定', price:1990, tag:'限定', budgets:['mid'],      dots:['#000000','#1a1a2e'], bg:'linear-gradient(150deg,#1e1e24,#141418)', kw:'黑色羽絨外套' },
+    { brand:'U', type:'coat',     name:'皮革感騎士外套', sub:'人造皮革 · 2色', price:2990, tag:'精選', budgets:['high'],     dots:['#000000','#1a1a2e','#5c2d91'], bg:'linear-gradient(150deg,#1a1820,#100e18)', kw:'騎士外套' },
+    { brand:'G', type:'pants',    name:'緊身踝靴長褲', sub:'彈力合身 · 3色', price:590,  tag:'熱銷', budgets:['low','mid'], dots:['#000000','#1a1a2e','#5c2d91'], bg:'linear-gradient(150deg,#181820,#0e0e18)', kw:'踝靴長褲' },
+    { brand:'G', type:'tshirt',   name:'黑色Oversized T', sub:'重磅棉 · 2色', price:390, tag:'',   budgets:['low'],       dots:['#000000','#1a1a2e'], bg:'linear-gradient(150deg,#1a1818,#101010)', kw:'黑色T恤' },
+    { brand:'G', type:'bag',      name:'皮革感腰帶包', sub:'磁扣設計 · 4色', price:490,  tag:'新品', budgets:['low','mid'], dots:['#000000','#1a1a2e','#5c2d91','#c0c0c0'], bg:'linear-gradient(150deg,#1c1820,#121018)', kw:'腰帶包' },
+    { brand:'G', type:'shoes',    name:'厚底踝靴',    sub:'皮革感 · 2色',  price:990,  tag:'',   budgets:['mid'],       dots:['#000000','#1a1a2e'], bg:'linear-gradient(150deg,#161618,#0e0e10)', kw:'踝靴' },
+    { brand:'U', type:'dress',    name:'府綢黑色洋裝', sub:'垂墜緞面感 · 1色', price:1490, tag:'',  budgets:['high'],      dots:['#000000','#1a1a2e'], bg:'linear-gradient(150deg,#1e1c20,#141218)', kw:'黑色洋裝' },
   ],
   korean: [
-    { brand:'U', name:'短版圓領針織衫', sub:'棉混紡 · 12色', price:'NT$790', dots:['#f9e0e0','#ffd1dc','#c8e6c9','#e8d5b0','#ffffff'], tag:'熱銷', bg:'linear-gradient(160deg,#fce4ec,#f8d4e4)', icon:'🎀', url: UQ+'短版針織衫' },
-    { brand:'U', name:'府綢細褶裙', sub:'A字版型 · 5色', price:'NT$890', dots:['#f9e0e0','#2e2820','#c8e6c9','#ffd1dc'], tag:'新品', bg:'linear-gradient(160deg,#fde8f0,#f4dce8)', icon:'👗', url: UQ+'府綢細褶裙' },
-    { brand:'G', name:'格紋百褶裙', sub:'迷你版型 · 4色', price:'NT$390', dots:['#f9e0e0','#2e2820','#6b8cae','#c9a96e'], tag:'熱銷', bg:'linear-gradient(160deg,#fce0e8,#f4d4e0)', icon:'🩷', url: GU+'格紋百褶裙' },
-    { brand:'G', name:'瑪莉珍厚底鞋', sub:'內增高3cm · 3色', price:'NT$690', dots:['#2e2820','#ffffff','#f9e0e0'], tag:'', bg:'linear-gradient(160deg,#f0e4ec,#e4d4e4)', icon:'👞', url: GU+'瑪莉珍鞋' },
+    { brand:'U', type:'knitwear', name:'短版圓領針織衫', sub:'棉混紡 · 12色', price:790, tag:'熱銷', budgets:['low','mid'], dots:['#f9e0e0','#ffd1dc','#c8e6c9','#e8d5b0','#ffffff'], bg:'linear-gradient(150deg,#fce4ec,#f8d4e4)', kw:'短版針織衫' },
+    { brand:'U', type:'skirt',    name:'府綢細褶裙',   sub:'A字版型 · 5色', price:890,  tag:'新品', budgets:['mid'],       dots:['#f9e0e0','#2e2820','#c8e6c9','#ffd1dc'], bg:'linear-gradient(150deg,#fde8f0,#f4dce8)', kw:'府綢裙' },
+    { brand:'U', type:'dress',    name:'印花迷你洋裝', sub:'輕薄棉質 · 2色', price:1290, tag:'',   budgets:['mid'],       dots:['#ffd1dc','#f9e0e0'], bg:'linear-gradient(150deg,#fce0ec,#f4d4e4)', kw:'迷你洋裝' },
+    { brand:'U', type:'dress',    name:'蕾絲拼接洋裝', sub:'精緻設計 · 2色', price:1990, tag:'精選', budgets:['high'],      dots:['#ffffff','#ffd1dc'], bg:'linear-gradient(150deg,#fce8f0,#f4dce8)', kw:'蕾絲洋裝' },
+    { brand:'G', type:'skirt',    name:'格紋百褶裙',  sub:'迷你版型 · 4色', price:390,  tag:'熱銷', budgets:['low'],       dots:['#f9e0e0','#2e2820','#6b8cae','#c9a96e'], bg:'linear-gradient(150deg,#fce0e8,#f4d4e0)', kw:'格紋百褶裙' },
+    { brand:'G', type:'tshirt',   name:'短版蕾絲領T', sub:'甜美細節 · 3色', price:390,  tag:'',   budgets:['low'],       dots:['#ffffff','#ffd1dc','#f9e0e0'], bg:'linear-gradient(150deg,#fde8f0,#f8dce8)', kw:'蕾絲T恤' },
+    { brand:'G', type:'shoes',    name:'瑪莉珍厚底鞋', sub:'內增高3cm · 3色', price:690, tag:'',   budgets:['mid'],       dots:['#2e2820','#ffffff','#f9e0e0'], bg:'linear-gradient(150deg,#f0e4ec,#e4d4e4)', kw:'瑪莉珍鞋' },
+    { brand:'G', type:'bag',      name:'迷你水桶包',  sub:'可愛圓形 · 4色', price:490,  tag:'',   budgets:['low','mid'], dots:['#ffd1dc','#f9e0e0','#c8e6c9','#ffffff'], bg:'linear-gradient(150deg,#fce4ec,#f4dce8)', kw:'水桶包' },
   ],
   vintage: [
-    { brand:'U', name:'法蘭絨格紋衬衫', sub:'有機棉 · 4色', price:'NT$990', dots:['#c4a882','#8b6f47','#5c4033','#3d5a3e'], tag:'', bg:'linear-gradient(160deg,#e8dcc8,#d8cbb8)', icon:'🎭', url: UQ+'法蘭絨格紋衬衫' },
-    { brand:'U', name:'燈芯絨直筒褲', sub:'修身版型 · 4色', price:'NT$1,290', dots:['#5c4033','#8b6f47','#2e2820','#3d5a3e'], tag:'新品', bg:'linear-gradient(160deg,#d8ccc0,#c8bab0)', icon:'👖', url: UQ+'燈芯絨褲' },
-    { brand:'G', name:'復古格紋A字裙', sub:'中長版 · 3款', price:'NT$490', dots:['#c4a882','#5c4033','#3d5a3e','#8b6f47'], tag:'', bg:'linear-gradient(160deg,#e4d8c8,#d4c4b0)', icon:'👗', url: GU+'格紋A字裙' },
-    { brand:'G', name:'復古厚底樂福鞋', sub:'仿麂皮 · 2色', price:'NT$790', dots:['#2e2820','#8b6f47'], tag:'熱銷', bg:'linear-gradient(160deg,#d8ccbc,#c8bca8)', icon:'👟', url: GU+'樂福鞋' },
+    { brand:'U', type:'shirt',    name:'法蘭絨格紋衬衫', sub:'有機棉 · 4色', price:990, tag:'',   budgets:['low','mid'], dots:['#c4a882','#8b6f47','#5c4033','#3d5a3e'], bg:'linear-gradient(150deg,#e8dcc8,#d8ccb8)', kw:'法蘭絨格紋衬衫' },
+    { brand:'U', type:'pants',    name:'燈芯絨直筒褲', sub:'修身版型 · 4色', price:1290, tag:'新品', budgets:['mid'],       dots:['#5c4033','#8b6f47','#2e2820','#3d5a3e'], bg:'linear-gradient(150deg,#d8ccc0,#c8bcb0)', kw:'燈芯絨褲' },
+    { brand:'U', type:'coat',     name:'羊毛格紋大衣', sub:'羊毛混紡 · 2色', price:3990, tag:'精選', budgets:['high'],      dots:['#c4a882','#5c4033','#2e2820'], bg:'linear-gradient(150deg,#d4c8b8,#c4b8a8)', kw:'格紋大衣' },
+    { brand:'U', type:'knitwear', name:'復古細針織衫', sub:'棉質 · 4色',    price:790,  tag:'',   budgets:['low','mid'], dots:['#c4a882','#8b6f47','#3d5a3e'], bg:'linear-gradient(150deg,#e4dcc8,#d8cdb8)', kw:'細針織衫' },
+    { brand:'G', type:'skirt',    name:'復古格紋A字裙', sub:'中長版 · 3款', price:490,  tag:'',   budgets:['low'],       dots:['#c4a882','#5c4033','#3d5a3e','#8b6f47'], bg:'linear-gradient(150deg,#e4d8c8,#d4c4b0)', kw:'格紋A字裙' },
+    { brand:'G', type:'shoes',    name:'復古厚底樂福', sub:'仿麂皮 · 2色',  price:790,  tag:'熱銷', budgets:['mid'],       dots:['#2e2820','#8b6f47'], bg:'linear-gradient(150deg,#d8ccbc,#c8bca8)', kw:'樂福鞋' },
+    { brand:'G', type:'tshirt',   name:'復古POLO衫',  sub:'撞色設計 · 3色', price:490,  tag:'',   budgets:['low'],       dots:['#c4a882','#2e2820','#3d5a3e'], bg:'linear-gradient(150deg,#e0d8c8,#d4ccb8)', kw:'POLO衫' },
+    { brand:'G', type:'bag',      name:'復古相機包',  sub:'斜背設計 · 3色', price:590,  tag:'',   budgets:['low','mid'], dots:['#c4a882','#8b6f47','#2e2820'], bg:'linear-gradient(150deg,#e4dcc8,#d8d0bc)', kw:'相機包' },
   ],
 };
 
 // ═══════════════════════════════════════════
 //  RENDER eDM
 // ═══════════════════════════════════════════
+const BUDGET_KEY = { '平價': 'low', '中價位': 'mid', '精品感': 'high' };
+
 function renderEDM(styleKey) {
   document.getElementById('edmStyleName').textContent = STYLES[styleKey].label;
   document.getElementById('edmSeason').textContent = SEASON;
-  const products = PRODUCTS[styleKey] || [];
+
+  const budget = state.budget || 'mid';
+  const all = PRODUCTS[styleKey] || [];
+  const filtered = all.filter(p => p.budgets.includes(budget)).slice(0, 4);
+
+  // If not enough items for this budget, fill with mid-budget items
+  if (filtered.length < 2) {
+    const fill = all.filter(p => p.budgets.includes('mid') && !filtered.includes(p));
+    filtered.push(...fill.slice(0, 4 - filtered.length));
+  }
+
   const grid = document.getElementById('edmGrid');
-  grid.innerHTML = products.map((p, i) => {
-    const isLight = isDarkBg(p.bg);
-    const txtColor = isLight ? '#fff' : '#2e2820';
+  grid.innerHTML = filtered.map((p, i) => {
+    const brandColor = p.brand === 'U' ? '#E40026' : '#000000';
+    const svgFn = SVG[p.type] || SVG.tshirt;
+    const svgHtml = svgFn(brandColor);
+    const searchUrl = (p.brand === 'U' ? UQ_BASE : GU_BASE) + encodeURIComponent(p.kw);
     return `
-      <a class="edm-card anim" href="${p.url}" target="_blank" rel="noopener" style="animation-delay:${i * .07}s" title="${p.name} — 點擊至官網查看">
+      <a class="edm-card anim" href="${searchUrl}" target="_blank" rel="noopener"
+         style="animation-delay:${i * .07}s" title="${p.name} — 點擊前往官網">
         <div class="edm-card-img" style="background:${p.bg};">
           <div class="edm-badge-wrap">
             <span class="edm-brand-badge ${p.brand === 'U' ? 'badge-u' : 'badge-g'}">${p.brand === 'U' ? 'UNIQLO' : 'GU'}</span>
             ${p.tag ? `<span class="edm-tag-badge">${p.tag}</span>` : ''}
           </div>
-          <span style="filter:drop-shadow(0 3px 6px rgba(0,0,0,.18));font-size:52px;">${p.icon}</span>
+          <div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;filter:drop-shadow(0 4px 8px rgba(0,0,0,.1));">
+            ${svgHtml}
+          </div>
         </div>
         <div class="edm-info">
           <div class="edm-name">${p.name}</div>
           <div class="edm-sub">${p.sub}</div>
           <div class="edm-price-row">
-            <span class="edm-price">${p.price}</span>
-            ${p.orig ? `<span class="edm-price-orig">${p.orig}</span>` : ''}
+            <span class="edm-price">NT$${p.price.toLocaleString()}</span>
           </div>
           <div class="edm-dots">
-            ${p.dots.map(c => `<div class="edm-dot" style="background:${c}" title="${c}"></div>`).join('')}
+            ${p.dots.map(c => `<div class="edm-dot" style="background:${c}"></div>`).join('')}
           </div>
           <div class="edm-link-btn">查看商品 →</div>
         </div>
@@ -1572,8 +1652,7 @@ function renderEDM(styleKey) {
 }
 
 function isDarkBg(bgStr) {
-  // rough check: if gradient contains dark hex values
-  return /#[0-1][0-9a-f]{5}|#2[0-9a][0-9a-f]{4}|#000|#1a|#0d/i.test(bgStr);
+  return /#[0-1][0-9a-f]{5}|#000|#1a|#0d/i.test(bgStr);
 }
 
 // ═══════════════════════════════════════════
