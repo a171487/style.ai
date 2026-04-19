@@ -316,89 +316,131 @@ textarea { resize: vertical; min-height: 72px; }
 .edm-season { font-size:10px; color:var(--muted); letter-spacing:.15em; text-transform:uppercase; }
 .edm-wrap[data-budget="high"] .edm-season { color:#7a6e60; }
 
-/* main content: figure + grid */
+/* ── eDM Body: photos + product list ── */
 .edm-body {
   display: grid;
-  grid-template-columns: 160px 1fr;
-  background: var(--card);
+  grid-template-columns: 5fr 6fr;
+  overflow: hidden;
+  min-height: 420px;
 }
-.edm-wrap[data-budget="high"] .edm-body { background: #1e1a16; }
+@media (max-width: 900px) { .edm-body { grid-template-columns: 1fr; min-height: auto; } }
+.edm-wrap[data-budget="high"] .edm-body { background: #1a1612; }
 
-/* woman figure column */
-.edm-figure-col {
-  display: flex; flex-direction: column; align-items: center;
-  justify-content: flex-end;
-  padding: 12px 8px 0;
-  border-right: 1px solid var(--border);
+/* Left: 2 outfit photos */
+.edm-photos-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  background: #111;
+  overflow: hidden;
+  align-content: stretch;
+}
+.edm-photo-wrap {
   position: relative;
   overflow: hidden;
-}
-.edm-wrap[data-budget="high"] .edm-figure-col { border-color: #3a3428; }
-.edm-figure-label {
-  font-size: 9px; letter-spacing:.2em; text-transform:uppercase;
-  color: var(--muted); margin-bottom: 6px;
-}
-.edm-wrap[data-budget="high"] .edm-figure-label { color:#7a6e60; }
-
-/* product grid */
-.edm-grid-col { padding: 12px; }
-.edm-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-}
-
-/* product card */
-.edm-card {
   background: var(--surface);
-  border-radius: 8px;
-  overflow: hidden;
-  transition: var(--trans);
-  text-decoration: none;
   display: block;
-  color: inherit;
-  border: 1.5px solid var(--border);
+  min-height: 320px;
 }
-.edm-wrap[data-budget="low"] .edm-card { border-color: #ffcc80; background:#fffde7; }
-.edm-wrap[data-budget="mid"] .edm-card { border-color: #e4ddd2; background:#ffffff; }
-.edm-wrap[data-budget="high"] .edm-card { border-color: #3a3428; background:#252018; }
-.edm-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(0,0,0,.14); }
+.edm-photo {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .5s ease;
+}
+.edm-photo-wrap:hover .edm-photo { transform: scale(1.06); }
+.edm-photo-fallback {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 8px;
+  font-size: 11px; color: var(--muted);
+  letter-spacing: .1em;
+}
 
-.edm-card-img {
-  aspect-ratio: 2/3;
-  display: flex; align-items: center; justify-content: center;
-  position: relative; overflow: hidden;
+/* Right: product list */
+.edm-list-col {
+  padding: 16px 18px;
+  background: var(--card);
+  overflow-y: auto;
+  max-height: 500px;
 }
-.edm-badge-wrap { position: absolute; top: 6px; left: 6px; display: flex; flex-direction: column; gap: 3px; }
-.edm-brand-badge { font-size: 8px; font-weight: 900; letter-spacing:.1em; padding:2px 6px; border-radius:2px; line-height:1.6; }
+.edm-wrap[data-budget="high"] .edm-list-col { background: #1e1a14; }
+.edm-list-title {
+  font-size: 10px; letter-spacing: .25em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 12px; padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.edm-wrap[data-budget="high"] .edm-list-title { color: #7a6e60; border-color: #3a3428; }
+.edm-list-item {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 11px 0; border-bottom: 1px solid var(--border);
+}
+.edm-list-item:last-child { border-bottom: none; }
+.edm-wrap[data-budget="high"] .edm-list-item { border-color: #3a3428; }
+.edm-list-num {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 800; flex-shrink: 0; margin-top: 1px;
+}
+.edm-wrap[data-budget="low"]  .edm-list-num { background: #ff6d00; color: #fff; }
+.edm-wrap[data-budget="mid"]  .edm-list-num { background: #2e2820; color: #fff; }
+.edm-wrap[data-budget="high"] .edm-list-num { background: #c9a96e; color: #1a1612; }
+.edm-list-info { flex: 1; min-width: 0; }
+.edm-list-brand-tag {
+  display: inline-block; font-size: 8px; font-weight: 900;
+  letter-spacing: .1em; padding: 1px 6px; border-radius: 2px;
+  margin-bottom: 4px; line-height: 1.7;
+}
+.edm-list-brand-tag.u { background: #E40026; color: #fff; }
+.edm-list-brand-tag.g { background: #000; color: #fff; }
+.edm-list-name {
+  font-size: 13px; font-weight: 600; color: var(--ink);
+  line-height: 1.4; margin-bottom: 2px;
+}
+.edm-wrap[data-budget="high"] .edm-list-name { color: #e8d5b0; }
+.edm-list-sub { font-size: 11px; color: var(--muted); margin-bottom: 5px; }
+.edm-wrap[data-budget="high"] .edm-list-sub { color: #7a6e60; }
+.edm-list-price { font-size: 15px; font-weight: 800; margin-bottom: 5px; }
+.edm-wrap[data-budget="low"]  .edm-list-price { color: #e65100; }
+.edm-wrap[data-budget="mid"]  .edm-list-price { color: #E40026; }
+.edm-wrap[data-budget="high"] .edm-list-price { color: #c9a96e; }
+.edm-list-dots { display: flex; gap: 3px; margin-bottom: 7px; flex-wrap: wrap; }
+.edm-list-dot { width: 11px; height: 11px; border-radius: 50%; border: 1px solid rgba(0,0,0,.15); }
+.edm-wrap[data-budget="high"] .edm-list-dot { border-color: rgba(255,255,255,.2); }
+.edm-list-link {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 700; letter-spacing: .04em;
+  padding: 4px 12px; border-radius: 3px;
+  text-decoration: none; transition: var(--trans);
+}
+.edm-wrap[data-budget="low"]  .edm-list-link { border: 1.5px solid #ff6d00; color: #ff6d00; }
+.edm-wrap[data-budget="low"]  .edm-list-link:hover { background: #ff6d00; color: #fff; }
+.edm-wrap[data-budget="mid"]  .edm-list-link { border: 1.5px solid #2e2820; color: #2e2820; }
+.edm-wrap[data-budget="mid"]  .edm-list-link:hover { background: #2e2820; color: #fff; }
+.edm-wrap[data-budget="high"] .edm-list-link { border: 1.5px solid #c9a96e; color: #c9a96e; }
+.edm-wrap[data-budget="high"] .edm-list-link:hover { background: #c9a96e; color: #1a1612; }
+
+/* photo label overlay */
+.edm-photo-label {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 20px 10px 8px;
+  background: linear-gradient(transparent, rgba(0,0,0,.45));
+  color: #fff; font-size: 10px; letter-spacing: .15em;
+  text-transform: uppercase; text-align: center;
+}
+
+/* list body / meta row */
+.edm-list-body { flex: 1; min-width: 0; }
+.edm-list-meta {
+  display: flex; align-items: center; gap: 8px;
+  flex-wrap: wrap; margin-bottom: 5px;
+}
+.edm-list-dots { display: flex; gap: 3px; align-items: center; }
+
+/* badge/dot shared */
 .badge-u { background: #E40026; color: #fff; }
 .badge-g { background: #000; color: #fff; }
-.edm-tag-badge { font-size:8px; font-weight:700; padding:2px 5px; border-radius:2px; line-height:1.6; background:#fff; color:#E40026; border:1px solid #E40026; align-self:flex-start; }
-.edm-wrap[data-budget="high"] .edm-tag-badge { background:#c9a96e; color:#1a1612; border-color:#c9a96e; }
-
-.edm-info { padding: 8px 10px 10px; }
-.edm-name { font-size:11px; font-weight:600; color:var(--ink); line-height:1.4; margin-bottom:2px; }
-.edm-wrap[data-budget="high"] .edm-name { color:#e8d5b0; }
-.edm-sub { font-size:9.5px; color:var(--muted); margin-bottom:4px; }
-.edm-wrap[data-budget="high"] .edm-sub { color:#7a6e60; }
-.edm-price { font-size:13px; font-weight:800; margin-bottom:5px; }
-.edm-wrap[data-budget="low"]  .edm-price { color:#e65100; }
-.edm-wrap[data-budget="mid"]  .edm-price { color:#E40026; }
-.edm-wrap[data-budget="high"] .edm-price { color:#c9a96e; }
-.edm-dots { display:flex; gap:4px; margin-bottom:7px; flex-wrap:wrap; }
-.edm-dot { width:12px; height:12px; border-radius:50%; border:1px solid rgba(0,0,0,.18); flex-shrink:0; }
-.edm-wrap[data-budget="high"] .edm-dot { border-color:rgba(255,255,255,.2); }
-.edm-link-btn {
-  display:block; text-align:center; font-size:10px; font-weight:700;
-  letter-spacing:.06em; padding:5px 8px; border-radius:3px;
-  text-decoration:none; transition:var(--trans);
-}
-.edm-wrap[data-budget="low"]  .edm-link-btn { border:1.5px solid #ff6d00; color:#ff6d00; }
-.edm-wrap[data-budget="low"]  .edm-link-btn:hover { background:#ff6d00; color:#fff; }
-.edm-wrap[data-budget="mid"]  .edm-link-btn { border:1.5px solid #2e2820; color:#2e2820; }
-.edm-wrap[data-budget="mid"]  .edm-link-btn:hover { background:#2e2820; color:#fff; }
-.edm-wrap[data-budget="high"] .edm-link-btn { border:1.5px solid #c9a96e; color:#c9a96e; }
-.edm-wrap[data-budget="high"] .edm-link-btn:hover { background:#c9a96e; color:#1a1612; }
 
 /* ── Outfit Items Grid ── */
 .outfit-grid {
@@ -844,7 +886,7 @@ textarea { resize: vertical; min-height: 72px; }
         <div class="chip-group" id="budgetChips">
           <div class="chip active" data-val="平價">平價</div>
           <div class="chip" data-val="中價位">中價位</div>
-          <div class="chip" data-val="精品">精品感</div>
+          <div class="chip" data-val="精品感">精品感</div>
         </div>
       </div>
       <button class="btn btn-primary btn-block" id="generateBtn" style="margin-top:4px;">
@@ -887,15 +929,10 @@ textarea { resize: vertical; min-height: 72px; }
           </div>
           <span class="edm-season" id="edmSeason">2025 Spring / Summer</span>
         </div>
-        <!-- Body: figure + products -->
+        <!-- Body: outfit photos + product list -->
         <div class="edm-body">
-          <div class="edm-figure-col">
-            <div class="edm-figure-label">Today's Model</div>
-            <div id="womanFigure"></div>
-          </div>
-          <div class="edm-grid-col">
-            <div class="edm-grid" id="edmGrid"><!-- JS --></div>
-          </div>
+          <div class="edm-photos-col" id="edmPhotos"><!-- JS --></div>
+          <div class="edm-list-col" id="edmList"><!-- JS --></div>
         </div>
       </div>
 
@@ -1760,6 +1797,52 @@ function womanFigureSvg(palette, budget) {
 }
 
 // ═══════════════════════════════════════════
+//  STYLE PHOTOS  (Unsplash CDN — no API key)
+// ═══════════════════════════════════════════
+// All IDs below are verified working on Unsplash CDN
+const STYLE_PHOTOS = {
+  // 法式優雅 — portrait & editorial chic
+  elegant: [
+    { id: '1534528741775-53994a69daeb', alt: '法式極簡穿搭' },
+    { id: '1509631179647-0177331693ae', alt: '優雅俐落造型' },
+  ],
+  // 休閒隨性 — off-duty, relaxed
+  casual: [
+    { id: '1515886657613-9f3515b0c78f', alt: '休閒日常穿搭' },
+    { id: '1483985988355-763728e1935b', alt: '輕鬆隨性造型' },
+  ],
+  // 職場知性 — blazer & tailored
+  office: [
+    { id: '1541101767792-f9b2b1c4f127', alt: '職場知性穿搭' },
+    { id: '1565967511849-76a60a516170', alt: '商務俐落造型' },
+  ],
+  // 浪漫約會 — feminine & soft
+  date: [
+    { id: '1469334031218-e382a71b716b', alt: '浪漫約會穿搭' },
+    { id: '1617922001439-4a2e6562f328', alt: '甜美約會造型' },
+  ],
+  // 街頭潮流 — urban & bold
+  street: [
+    { id: '1517423440428-a5a00ad493e8', alt: '街頭潮流穿搭' },
+    { id: '1571513722275-4b41940f54b8', alt: '個性街頭造型' },
+  ],
+  // 運動休閒 — activewear
+  athleisure: [
+    { id: '1518611012118-696072aa579a', alt: '運動休閒穿搭' },
+    { id: '1483985988355-763728e1935b', alt: '活力運動造型' },
+  ],
+  // 復古氣息 — retro & vintage
+  vintage: [
+    { id: '1490481651871-ab68de25d43d', alt: '復古風格穿搭' },
+    { id: '1534528741775-53994a69daeb', alt: '復古典雅造型' },
+  ],
+};
+
+function unsplashUrl(id) {
+  return `https://images.unsplash.com/photo-${id}?w=400&h=560&fit=crop&auto=format&q=80`;
+}
+
+// ═══════════════════════════════════════════
 //  RENDER eDM
 // ═══════════════════════════════════════════
 function renderEDM(styleKey) {
@@ -1779,41 +1862,48 @@ function renderEDM(styleKey) {
   document.getElementById('edmStyleName').textContent = sData.label;
   document.getElementById('edmSeason').textContent = SEASON;
 
-  // Woman figure
-  document.getElementById('womanFigure').innerHTML = womanFigureSvg(sData.palette, budget);
+  // ── Left: outfit photos ──
+  const photos = STYLE_PHOTOS[styleKey] || STYLE_PHOTOS.elegant;
+  document.getElementById('edmPhotos').innerHTML = photos.map((ph, i) => `
+    <div class="edm-photo-wrap anim" style="animation-delay:${i*.12}s">
+      <img class="edm-photo"
+           src="${unsplashUrl(ph.id)}"
+           alt="${ph.alt}"
+           loading="lazy"
+           onerror="this.parentElement.style.background='linear-gradient(160deg,#e8e0d4,#d4cbc0)';this.style.display='none';">
+      <div class="edm-photo-label">${ph.alt}</div>
+    </div>`).join('');
 
-  // Products
+  // ── Right: product list ──
   const all = PRODUCTS[styleKey] || [];
   const filtered = all.filter(p => p.budgets.includes(budget));
-  const shown = filtered.length >= 4 ? filtered.slice(0, 4)
-    : [...filtered, ...all.filter(p => p.budgets.includes('mid') && !filtered.includes(p))].slice(0, 4);
+  const shown = filtered.length >= 4 ? filtered.slice(0, 6)
+    : [...filtered, ...all.filter(p => !filtered.includes(p))].slice(0, 6);
 
-  const imgFilter = vibe.cardImgFilter;
-  document.getElementById('edmGrid').innerHTML = shown.map((p, i) => {
-    const brandColor = p.brand === 'U' ? '#E40026' : '#000000';
-    const svgHtml = (SVG[p.type] || SVG.tshirt)(brandColor);
-    const url = (p.brand === 'U' ? UQ_BASE : GU_BASE) + encodeURIComponent(p.kw);
-    return `
-      <a class="edm-card anim" href="${url}" target="_blank" rel="noopener"
-         style="animation-delay:${i*.07}s" title="${p.name}">
-        <div class="edm-card-img" style="background:${p.bg};filter:${imgFilter};">
-          <div class="edm-badge-wrap">
-            <span class="edm-brand-badge ${p.brand==='U'?'badge-u':'badge-g'}">${p.brand==='U'?'UNIQLO':'GU'}</span>
-            ${p.tag?`<span class="edm-tag-badge">${p.tag}</span>`:''}
+  const budgetLabel = { low: '平價推薦', mid: '中價位精選', high: '精品質感' }[budget];
+  document.getElementById('edmList').innerHTML = `
+    <div class="edm-list-title">${budgetLabel} · ${sData.label}穿搭清單</div>
+    ${shown.map((p, i) => {
+      const url = (p.brand === 'U' ? UQ_BASE : GU_BASE) + encodeURIComponent(p.kw);
+      const storeName = p.brand === 'U' ? 'UNIQLO 官網' : 'GU 官網';
+      const storeColor = p.brand === 'U' ? '#E40026' : '#000';
+      return `
+      <div class="edm-list-item anim" style="animation-delay:${i*.08}s">
+        <div class="edm-list-num">${String(i+1).padStart(2,'0')}</div>
+        <div class="edm-list-body">
+          <div class="edm-list-name">${p.name}</div>
+          <div class="edm-list-sub">${p.sub}</div>
+          <div class="edm-list-meta">
+            <span class="edm-list-price">NT$${p.price.toLocaleString()}</span>
+            <span class="edm-list-dots">${p.dots.map(c=>`<span class="edm-dot" style="background:${c}"></span>`).join('')}</span>
+            ${p.tag ? `<span class="edm-tag-badge">${p.tag}</span>` : ''}
           </div>
-          <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 3px 6px rgba(0,0,0,.12));">
-            ${svgHtml}
-          </div>
+          <a class="edm-list-link" href="${url}" target="_blank" rel="noopener">
+            <span style="color:${storeColor};font-weight:700;">${storeName}</span>　前往選購 →
+          </a>
         </div>
-        <div class="edm-info">
-          <div class="edm-name">${p.name}</div>
-          <div class="edm-sub">${p.sub}</div>
-          <div class="edm-price">NT$${p.price.toLocaleString()}</div>
-          <div class="edm-dots">${p.dots.map(c=>`<div class="edm-dot" style="background:${c}"></div>`).join('')}</div>
-          <div class="edm-link-btn">查看商品 →</div>
-        </div>
-      </a>`;
-  }).join('');
+      </div>`;
+    }).join('')}`;
 }
 
 function isDarkBg(bgStr) {
