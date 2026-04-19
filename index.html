@@ -1563,7 +1563,9 @@ const SVG = {
 const SEASON = '2025 Spring / Summer';
 // budgets: 'low'=平價, 'mid'=中價位, 'high'=精品感
 // kw: short search keyword (simpler = better results)
-const UQ_BASE = 'https://www.uniqlo.com/tw/zh_TW/search?q=';
+// uq.goodjack.tw = Taiwan UNIQLO product browser (uses official UNIQLO API, shows real items)
+const UQ_BASE = 'https://uq.goodjack.tw/store?keywords=';
+// GU official Taiwan search
 const GU_BASE = 'https://www.gu-global.com/tw/zh_TW/search?q=';
 
 // bg: CSS gradient string for the product card image area
@@ -1885,7 +1887,7 @@ function renderEDM(styleKey) {
     <div class="edm-list-title">${budgetLabel} · ${sData.label}穿搭清單</div>
     ${shown.map((p, i) => {
       const url = (p.brand === 'U' ? UQ_BASE : GU_BASE) + encodeURIComponent(p.kw);
-      const storeName = p.brand === 'U' ? 'UNIQLO 官網' : 'GU 官網';
+      const storeName = p.brand === 'U' ? 'UNIQLO 台灣選品' : 'GU 官網';
       const storeColor = p.brand === 'U' ? '#E40026' : '#000';
       return `
       <div class="edm-list-item anim" style="animation-delay:${i*.08}s">
